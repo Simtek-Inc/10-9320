@@ -1,0 +1,2212 @@
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 1   
+
+
+C51 COMPILER V8.06, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.C BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          //;************************************************
+   2          //DESCRIPTION:
+   3          //SIMTEK PART # 10-9320-01
+   4          //75-9879
+   5          //06/24/2022
+   6          //John Morrison
+   7          /* Based on: SIMTEK PART # 10-9186-01 75-8902 10/12/2021 David B.*/
+   8          //;************************************************
+   9          #include<absacc.h>
+  10          #include<aduc841.h>
+  11          #include<intrins.h>
+  12          //;************************************************
+  13          #define CONTROL_COMMAND 0x23                    //
+  14          #define SWITCH_STATUS   0x24                    //
+  15          #define OPTIONS                 0x25                    //
+  16          #define PANEL_STATUS    0x26                    //
+  17          #define ENC_POT_STATUS  0x28                    //
+  18          #define ECHO_OPTION_ID  0x30                    //
+  19          #define REALTIME_OPTION_ID  0x31                //
+  20          #define BRT_CTRL_OPTION_ID  0x32                //
+  21          //;************************************************
+  22          //BEZEL PUSH BUTTON ADDRESSES
+  23          //COUNT STARTS UPPER LEFT BEZEL
+  24          #define PB_41 0x41                                              //
+  25          #define PB_42 0x42                                              //
+  26          #define PB_43 0x43                                              //
+  27          #define PB_44 0x44                                              //
+  28          #define PB_45 0x45                                              //
+  29          #define PB_46 0x46                                              //
+  30          #define PB_47 0x47                                              //
+  31          #define PB_48 0x48                                              //
+  32          #define PB_49 0x49                                              //
+  33          #define PB_4A 0x4A                                              //
+  34          #define PB_4B 0x4B                                              //
+  35          #define PB_4C 0x4C                                              //
+  36          #define PB_4D 0x4D                                              //
+  37          #define PB_4E 0x4E                                              //
+  38          #define PB_4F 0x4F                                              //
+  39          #define PB_50 0x50                                              //
+  40          #define PB_51 0x51                                              //
+  41          #define BRT_PB 0x52                                             //
+  42          #define ENC_PB 0x53                                             //
+  43          #define POT_ID 0x56                                             //
+  44          #define ENC_ID 0x58                                             //
+  45          #define BUTTON_PRESSED 0x31                             //
+  46          #define BUTTON_RELEASED 0x30                    //
+  47          //;************************************************
+  48          #define DISPLAY_DIM_ID 0x5A                             //
+  49          #define CONTRAST_ID    0x5C                             //
+  50          #define BEZEL_DIM_ID   0x5E                             //
+  51          #define SKIDBALL_ID    0x60                             //
+  52          //;************************************************
+  53          unsigned char bdata Abyte;                                      //create a bit addressable byte
+  54          sbit Abyte0 = Abyte^0;
+  55          sbit Abyte1 = Abyte^1;
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 2   
+
+  56          sbit Abyte2 = Abyte^2;
+  57          sbit Abyte3 = Abyte^3;
+  58          sbit Abyte4 = Abyte^4;
+  59          sbit Abyte5 = Abyte^5;
+  60          sbit Abyte6 = Abyte^6;
+  61          sbit Abyte7 = Abyte^7;
+  62          //;************************************************
+  63          unsigned char bdata Bbyte;                                      //create a bit addressable byte
+  64          sbit Bbyte0 = Bbyte^0;
+  65          sbit Bbyte1 = Bbyte^1;
+  66          sbit Bbyte2 = Bbyte^2;
+  67          sbit Bbyte3 = Bbyte^3;
+  68          sbit Bbyte4 = Bbyte^4;
+  69          sbit Bbyte5 = Bbyte^5;
+  70          sbit Bbyte6 = Bbyte^6;
+  71          sbit Bbyte7 = Bbyte^7;
+  72          //;************************************************
+  73          // AD7247A Control Lines                                //
+  74          //;************************************************
+  75          sbit csa        = P3^2;                                 //                 
+  76          sbit csb        = P3^3;                                 //
+  77          sbit wr         = P3^4;                                 //
+  78          //;************************************************
+  79          // FPGA Reset                                                   //
+  80          //;************************************************
+  81          sbit fpga_reset = P3^5;                                 // u3 pin 27
+  82          //;************************************************
+  83          // MAX144ACUA Control Lines                             //
+  84          //;************************************************
+  85          sbit ADC_clk    = P2^0;                                 //
+  86          sbit ADC_cs     = P2^1;                                 //
+  87          sbit ADC_data   = P2^3;                                 //
+  88          //;************************************************
+  89          // 21-500 Day/Night Control line                //
+  90          //;************************************************ 
+  91          sbit day_night  = P2^2;                                 // 
+  92          //;************************************************
+  93          bit     reset_bit                       = 0;                            // reset flag
+  94          bit send_status_bit             = 0;
+  95          bit update_bezel_dimming_bit    = 0;
+  96          bit update_display_contrast_bit = 0;
+  97          bit update_display_dimming_bit  = 0;
+  98          bit update_skidball_bit         = 0;
+  99          bit send_single_switch_status   = 0;
+ 100          bit send_encoder_status         = 0;
+ 101          bit send_pot_status             = 0;
+ 102          bit send_display_dim_values     = 0;
+ 103          bit send_contrast_values        = 0;
+ 104          bit send_bezel_dim_values       = 0;
+ 105          bit send_skidball_values        = 0;
+ 106          bit send_echo_value                     = 0;
+ 107          bit send_realtime_value         = 0;
+ 108          bit send_lcd_value                      = 0;
+ 109          //;************************************************
+ 110          unsigned char RS_micro_firmware[] =  {0x75,0x89,0x02,0x2D};
+ 111          unsigned char RS_fpga_firmware[4];              // array of 4 sequential storage locations 0 - 3
+ 112          //;************************************************
+ 113          unsigned char temptransmit;
+ 114          unsigned char tempreceive;
+ 115          
+ 116          unsigned char tempskidhi;
+ 117          unsigned char tempskidlo;
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 3   
+
+ 118          //;************************************************
+ 119          unsigned char display_dim_msn;
+ 120          unsigned char display_dim_lsn;
+ 121          unsigned char display_dim_byte;
+ 122          unsigned char old_display_dim_byte;
+ 123          
+ 124          unsigned char contrast_msn = 0x30;
+ 125          unsigned char contrast_lsn = 0x35;
+ 126          unsigned char contrast_byte;
+ 127          
+ 128          unsigned char bezel_dim_msn = 0x30;
+ 129          unsigned char bezel_dim_lsn = 0x30;
+ 130          unsigned char bezel_dim_byte;
+ 131          
+ 132          unsigned char skidball_msn = 0x37;
+ 133          unsigned char skidball_lsn = 0x46;
+ 134          unsigned char skidball_byte;
+ 135          unsigned int  look_up_value;
+ 136          
+ 137          unsigned char enc_msn = 0x30;
+ 138          unsigned char enc_lsn = 0x30;
+ 139          unsigned char enc_byte;
+ 140          
+ 141          unsigned char brt_msn = 0x30;
+ 142          unsigned char brt_lsn = 0x30;
+ 143          unsigned char old_brt_byte; 
+ 144          unsigned char new_brt_byte;
+ 145          //;************************************************
+ 146          unsigned char s_display_dim_msn = 0x30;
+ 147          unsigned char s_display_dim_lsn = 0x30;
+ 148          
+ 149          unsigned char s_contrast_msn = 0x30;
+ 150          unsigned char s_contrast_lsn = 0x35;
+ 151          
+ 152          unsigned char s_bezel_dim_msn = 0x30;
+ 153          unsigned char s_bezel_dim_lsn = 0x30;
+ 154          
+ 155          unsigned char s_skidball_msn = 0x37;
+ 156          unsigned char s_skidball_lsn = 0x46;
+ 157          
+ 158          unsigned char s_enc_msn = 0x30;
+ 159          unsigned char s_enc_lsn = 0x30;
+ 160          //;************************************************
+ 161          unsigned char switch_id;
+ 162          unsigned char echo = 0x30;                                              //;ECHO OFF IS DEFAULT
+ 163          unsigned char realtime = 0x30;                                  //;REPORT ON CHANGE IS DEFAULT
+ 164          unsigned char brt_control = 0x31;                               //;SERIAL BRIGHTNESS CONTROL IS DEFAULT
+ 165          unsigned char Brt_Knob;
+ 166          //;************************************************
+ 167          unsigned char KEYADDRESS;
+ 168          unsigned char KEYDATA;
+ 169          unsigned char SWOLD1;
+ 170          unsigned char SWOLD2;
+ 171          unsigned char SWOLD3;
+ 172          unsigned char SWOLD4;
+ 173          unsigned char SWOLD5;
+ 174          //;************************************************
+ 175          unsigned char PB_41_Status = 0x30;                              //
+ 176          unsigned char PB_42_Status = 0x30;                              //
+ 177          unsigned char PB_43_Status = 0x30;                              //
+ 178          unsigned char PB_44_Status = 0x30;                              //
+ 179          unsigned char PB_45_Status = 0x30;                              //
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 4   
+
+ 180          unsigned char PB_46_Status = 0x30;                              //
+ 181          unsigned char PB_47_Status = 0x30;                              //
+ 182          unsigned char PB_48_Status = 0x30;                              //
+ 183          unsigned char PB_49_Status = 0x30;                              //
+ 184          unsigned char PB_4A_Status = 0x30;                              //
+ 185          unsigned char PB_4B_Status = 0x30;                              //
+ 186          unsigned char PB_4C_Status = 0x30;                              //
+ 187          unsigned char PB_4D_Status = 0x30;                              //
+ 188          unsigned char PB_4E_Status = 0x30;                              //
+ 189          unsigned char PB_4F_Status = 0x30;                              //
+ 190          unsigned char PB_50_Status = 0x30;                              //
+ 191          unsigned char PB_51_Status = 0x30;                              //
+ 192          unsigned char BRT_PB_Status = 0x30;                             //
+ 193          unsigned char ENC_PB_Status = 0x30;                             //
+ 194          unsigned char Switch_Data;                                              //
+ 195          unsigned long int i;
+ 196          unsigned long int j;
+ 197          unsigned char difference;                                               //
+ 198          //;************************************************
+ 199          unsigned char code dim_value[256] =
+ 200          {
+ 201          //NVIS
+ 202          0xFF,0xFD,0xFB,0xF9,0xF7,0xF5,0xF3,0xF1,0xEF,0xED,0xEB,0xE9,0xE7,0xE5,0xE3,0xE1,
+ 203          0xDF,0xDD,0xDB,0xD9,0xD7,0xD5,0xD3,0xD1,0xCF,0xCD,0xCB,0xC9,0xC7,0xC5,0xC3,0xC1,
+ 204          0xBF,0xBD,0xBB,0xB9,0xB7,0xB5,0xB3,0xB1,0xAF,0xAD,0xAB,0xA9,0xA7,0xA5,0xA3,0xA1,
+ 205          0x9F,0x9D,0x9B,0x99,0x97,0x95,0x93,0x91,0x8F,0x8D,0x8B,0x89,0x87,0x85,0x83,0x81,
+ 206          0x7F,0x7D,0x7B,0x79,0x77,0x75,0x73,0x71,0x6F,0x6D,0x6B,0x69,0x67,0x65,0x63,0x61,
+ 207          0x5F,0x5D,0x5B,0x59,0x57,0x55,0x53,0x51,0x4F,0x4D,0x4B,0x49,0x47,0x45,0x43,0x41,
+ 208          0x3F,0x3D,0x3B,0x39,0x37,0x35,0x33,0x31,0x2F,0x2D,0x2B,0x29,0x27,0x25,0x23,0x21,
+ 209          0x1F,0x1D,0x1B,0x19,0x17,0x15,0x13,0x11,0x0F,0x0D,0x0B,0x09,0x07,0x05,0x03,0x01,
+ 210          //NON NVIS
+ 211          0xFB,0xFA,0xF9,0xF8,0xF7,0xF5,0xF3,0xF1,0xEF,0xED,0xEB,0xE9,0xE7,0xE5,0xE3,0xE1,
+ 212          0xDF,0xDD,0xDB,0xD9,0xD7,0xD5,0xD3,0xD1,0xCF,0xCD,0xCB,0xC9,0xC7,0xC5,0xC3,0xC1,
+ 213          0xBF,0xBD,0xBB,0xB9,0xB7,0xB5,0xB3,0xB1,0xAF,0xAD,0xAB,0xA9,0xA7,0xA5,0xA3,0xA1,
+ 214          0x9F,0x9D,0x9B,0x99,0x97,0x95,0x93,0x91,0x8F,0x8D,0x8B,0x89,0x87,0x85,0x83,0x81,
+ 215          0x7F,0x7D,0x7B,0x79,0x77,0x75,0x73,0x71,0x6F,0x6D,0x6B,0x69,0x67,0x65,0x63,0x61,
+ 216          0x5F,0x5D,0x5B,0x59,0x57,0x55,0x53,0x51,0x4F,0x4D,0x4B,0x49,0x47,0x45,0x43,0x41,
+ 217          0x3F,0x3D,0x3B,0x39,0x37,0x35,0x33,0x31,0x2F,0x2D,0x2B,0x29,0x27,0x25,0x23,0x21,
+ 218          0x1F,0x1E,0x1D,0x1C,0x1B,0x1A,0x19,0x18,0x17,0x16,0x15,0x14,0x13,0x12,0x11,0x10,
+ 219          //0x1F,0x1D,0x1B,0x19,0x17,0x15,0x13,0x11,0x0F,0x0D,0x0B,0x09,0x07,0x05,0x03,0x01,
+ 220          };
+ 221          /*//;************************************************
+ 222          unsigned int code skid_value[256] =
+ 223          {
+ 224          0x0000,0x0010,0x0020,0x0030,0x0040,0x0050,0x0060,0x0070,0x0080,0x0090,0x00A0,0x00B0,0x00C0,0x00D0,0x00E0,0
+             -x00F0,
+ 225          0x0100,0x0110,0x0120,0x0130,0x0140,0x0150,0x0160,0x0170,0x0180,0x0190,0x01A0,0x01B0,0x01C0,0x01D0,0x01E0,0
+             -x01F0,
+ 226          0x0200,0x0210,0x0220,0x0230,0x0240,0x0250,0x0260,0x0270,0x0280,0x0290,0x02A0,0x02B0,0x02C0,0x02D0,0x02E0,0
+             -x02F0,
+ 227          0x0300,0x0310,0x0320,0x0330,0x0340,0x0350,0x0360,0x0370,0x0380,0x0390,0x03A0,0x03B0,0x03C0,0x03D0,0x03E0,0
+             -x03F0,
+ 228          0x0400,0x0410,0x0420,0x0430,0x0440,0x0450,0x0460,0x0470,0x0480,0x0490,0x04A0,0x04B0,0x04C0,0x04D0,0x04E0,0
+             -x04F0,
+ 229          0x0500,0x0510,0x0520,0x0530,0x0540,0x0550,0x0560,0x0570,0x0580,0x0590,0x05A0,0x05B0,0x05C0,0x05D0,0x05E0,0
+             -x05F0,
+ 230          0x0600,0x0610,0x0620,0x0630,0x0640,0x0650,0x0660,0x0670,0x0680,0x0690,0x06A0,0x06B0,0x06C0,0x06D0,0x06E0,0
+             -x06F0,
+ 231          0x0700,0x0710,0x0720,0x0730,0x0740,0x0750,0x0760,0x0770,0x0780,0x0790,0x07A0,0x07B0,0x07C0,0x07D0,0x07E0,0
+             -x07F0,
+ 232          0x0800,0x0810,0x0820,0x0830,0x0840,0x0850,0x0860,0x0870,0x0880,0x0890,0x08A0,0x08B0,0x08C0,0x08D0,0x08E0,0
+             -x08F0,
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 5   
+
+ 233          0x0900,0x0910,0x0920,0x0930,0x0940,0x0950,0x0960,0x0970,0x0980,0x0990,0x09A0,0x09B0,0x09C0,0x09D0,0x09E0,0
+             -x09F0,
+ 234          0x0A00,0x0A10,0x0A20,0x0A30,0x0A40,0x0A50,0x0A60,0x0A70,0x0A80,0x0A90,0x0AA0,0x0AB0,0x0AC0,0x0AD0,0x0AE0,0
+             -x0AF0,
+ 235          0x0B00,0x0B10,0x0B20,0x0B30,0x0B40,0x0B50,0x0B60,0x0B70,0x0B80,0x0B90,0x0BA0,0x0BB0,0x0BC0,0x0BD0,0x0BE0,0
+             -x0BF0,
+ 236          0x0C00,0x0C10,0x0C20,0x0C30,0x0C40,0x0C50,0x0C60,0x0C70,0x0C80,0x0C90,0x0CA0,0x0CB0,0x0CC0,0x0CD0,0x0CE0,0
+             -x0CF0,
+ 237          0x0D00,0x0D10,0x0D20,0x0D30,0x0D40,0x0D50,0x0D60,0x0D70,0x0D80,0x0D90,0x0DA0,0x0DB0,0x0DC0,0x0DD0,0x0DE0,0
+             -x0DF0,
+ 238          0x0E00,0x0E10,0x0E20,0x0E30,0x0E40,0x0E50,0x0E60,0x0E70,0x0E80,0x0E90,0x0EA0,0x0EB0,0x0EC0,0x0ED0,0x0EE0,0
+             -x0EF0,
+ 239          0x0F00,0x0F10,0x0F20,0x0F30,0x0F40,0x0F50,0x0F60,0x0F70,0x0F80,0x0F90,0x0FA0,0x0FB0,0x0FC0,0x0FD0,0x0FE0,0
+             -x0FF0,
+ 240          };
+ 241          */
+ 242          unsigned int code skid_value[256] =
+ 243          {
+ 244          //-5VDC TO +5VDC
+ 245          0x0400,0x0408,0x0410,0x0418,0x0420,0x0428,0x0430,0x0438,0x0440,0x0448,0x0450,0x0458,0x0460,0x0468,0x0470,0
+             -x0478,
+ 246          0x0480,0x0488,0x0490,0x0498,0x04A0,0x04A8,0x04B0,0x04B8,0x04C0,0x04C8,0x04D0,0x04D8,0x04E0,0x04E8,0x04F0,0
+             -x04F8,
+ 247          0x0500,0x0508,0x0510,0x0518,0x0520,0x0528,0x0530,0x0538,0x0540,0x0548,0x0550,0x0558,0x0560,0x0568,0x0570,0
+             -x0578,
+ 248          0x0580,0x0588,0x0590,0x0598,0x05A0,0x05A8,0x05B0,0x05B8,0x05C0,0x05C8,0x05D0,0x05D8,0x05E0,0x05E8,0x05F0,0
+             -x05F8,
+ 249          0x0600,0x0608,0x0610,0x0618,0x0620,0x0628,0x0630,0x0638,0x0640,0x0648,0x0650,0x0658,0x0660,0x0668,0x0670,0
+             -x0678,
+ 250          0x0680,0x0688,0x0690,0x0698,0x06A0,0x06A8,0x06B0,0x06B8,0x06C0,0x06C8,0x06D0,0x06D8,0x06E0,0x06E8,0x06F0,0
+             -x06F8,
+ 251          0x0700,0x0708,0x0710,0x0718,0x0720,0x0728,0x0730,0x0738,0x0740,0x0748,0x0750,0x0758,0x0760,0x0768,0x0770,0
+             -x0778,
+ 252          0x0780,0x0788,0x0790,0x0798,0x07A0,0x07A8,0x07B0,0x07B8,0x07C0,0x07C8,0x07D0,0x07D8,0x07E0,0x07E8,0x07F0,0
+             -x07F8,
+ 253          0x0800,0x0808,0x0810,0x0818,0x0820,0x0828,0x0830,0x0838,0x0840,0x0848,0x0850,0x0858,0x0860,0x0868,0x0870,0
+             -x0878,
+ 254          0x0880,0x0888,0x0890,0x0898,0x08A0,0x08A8,0x08B0,0x08B8,0x08C0,0x08C8,0x08D0,0x08D8,0x08E0,0x08E8,0x08F0,0
+             -x08F8,
+ 255          0x0900,0x0908,0x0910,0x0918,0x0920,0x0928,0x0930,0x0938,0x0940,0x0948,0x0950,0x0958,0x0960,0x0968,0x0970,0
+             -x0978,
+ 256          0x0980,0x0988,0x0990,0x0998,0x09A0,0x09A8,0x09B0,0x09B8,0x09C0,0x09C8,0x09D0,0x09D8,0x09E0,0x09E8,0x09F0,0
+             -x09F8,
+ 257          0x0A00,0x0A08,0x0A10,0x0A18,0x0A20,0x0A28,0x0A30,0x0A38,0x0A40,0x0A48,0x0A50,0x0A58,0x0A60,0x0A68,0x0A70,0
+             -x0A78,
+ 258          0x0A80,0x0A88,0x0A90,0x0A98,0x0AA0,0x0AA8,0x0AB0,0x0AB8,0x0AC0,0x0AC8,0x0AD0,0x0AD8,0x0AE0,0x0AE8,0x0AF0,0
+             -x0AF8,
+ 259          0x0B00,0x0B08,0x0B10,0x0B18,0x0B20,0x0B28,0x0B30,0x0B38,0x0B40,0x0B48,0x0B50,0x0B58,0x0B60,0x0B68,0x0B70,0
+             -x0B78,
+ 260          0x0B80,0x0B88,0x0B90,0x0B98,0x0BA0,0x0BA8,0x0BB0,0x0BB8,0x0BC0,0x0BC8,0x0BD0,0x0BD8,0x0BE0,0x0BE8,0x0BF0,0
+             -x0BF8,
+ 261          
+ 262          };
+ 263          //;************************************************
+ 264          unsigned char code contrast_value[16] =
+ 265          {
+ 266          0x00,0x17,0x27,0x37,0x47,0x57,0x67,0x77,0x87,0x97,0xA7,0xB7,0xC7,0xD7,0xE7,0xFF,
+ 267          };
+ 268          //;************************************************
+ 269          void DELAY_LOOP_Wait(const unsigned int DELAY);
+ 270          void setup_serial(void);
+ 271          void setup_pwm(void);
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 6   
+
+ 272          void setup_dac(void);
+ 273          void reset_everything(void);
+ 274          void transmit_data(void);
+ 275          void receive_data(void);
+ 276          void update_dimming(void);
+ 277          void send_status(void);
+ 278          void send_single_sw_status(void);
+ 279          void switch_send(void);
+ 280          void convert_to_transmit(void);
+ 281          void convert_to_receive(void);
+ 282          void update_dac(void);
+ 283          void update_skidball(void);
+ 284          void encoder(void);
+ 285          void clk_adc(void);
+ 286          void adc_read(void);
+ 287          void average_adc(void);
+ 288          void row_1(void);
+ 289          void row_2(void);
+ 290          void row_3(void);
+ 291          void row_4(void);
+ 292          void row_5(void);
+ 293          void send_command_values(void);
+ 294          void send_option_values(void);
+ 295          //;************************************************
+ 296          void main(void)
+ 297          {       setup_serial();
+ 298   1              setup_dac();
+ 299   1              setup_pwm();
+ 300   1              ewait = 0x07;   
+ 301   1              fpga_reset = 1;
+ 302   1              fpga_reset = 0;
+ 303   1              reset_bit = 1;
+ 304   1              reset_everything();
+ 305   1              P1      = 0x00;                                                 // configure as inputs 
+ 306   1              day_night = 0; 
+ 307   1              PBYTE[0x82] = 0x01; 
+ 308   1              j = 0;
+ 309   1              difference = 0;
+ 310   1              i = 0;
+ 311   1              update_display_contrast_bit = 1; 
+ 312   1      //;************************************************
+ 313   1              while(1)                                                
+ 314   1              {
+ 315   2      //      reset_everything();
+ 316   2      //      update_skidball();//;--------------------------
+ 317   2              
+ 318   2              update_dimming();
+ 319   2              update_skidball();//;--------------------------
+ 320   2              
+ 321   2              send_status();
+ 322   2              update_skidball();//;--------------------------
+ 323   2              
+ 324   2              send_single_sw_status();
+ 325   2              update_skidball();//;--------------------------
+ 326   2              
+ 327   2              update_dac();   
+ 328   2              update_skidball();//;-------------------------- 
+ 329   2              
+ 330   2              encoder();
+ 331   2              update_skidball();//;--------------------------
+ 332   2              
+ 333   2              row_1();
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 7   
+
+ 334   2              update_skidball();//;--------------------------
+ 335   2              
+ 336   2              row_2();
+ 337   2              update_skidball();//;--------------------------
+ 338   2              
+ 339   2              row_3();
+ 340   2              update_skidball();//;--------------------------
+ 341   2              
+ 342   2              row_4();
+ 343   2              update_skidball();//;--------------------------
+ 344   2              
+ 345   2              row_5();
+ 346   2              update_skidball();//;--------------------------
+ 347   2              
+ 348   2              send_command_values();
+ 349   2              update_skidball();//;--------------------------
+ 350   2              
+ 351   2              send_option_values();
+ 352   2              update_skidball();//;--------------------------
+ 353   2      
+ 354   2              adc_read();
+ 355   2              update_skidball();//;--------------------------
+ 356   2              
+ 357   2              i++;
+ 358   2              if(i == 100)
+ 359   2              {
+ 360   3              average_adc();
+ 361   3              j = 0;
+ 362   3              difference = 0;
+ 363   3              i = 0;
+ 364   3              }
+ 365   2              }
+ 366   1      }
+ 367          //;************************************************
+ 368          void DELAY_LOOP_Wait(const unsigned int DELAY)
+ 369          {unsigned int x, y;
+ 370   1      for (x = 0; x <= DELAY; x++)
+ 371   1      {for (y = 0; y <= 255; y++);}}                  // DELAY_LOOP_Wait(255);
+ 372          //;************************************************
+ 373          void setup_serial(void)
+ 374          {       
+ 375   1              SCON    = 0x40;                                         // MODE1 UART
+ 376   1              T3CON   = 0x84;                                         // 19200K BPS   
+ 377   1              T3FD    = 0x01;                                         // DEFAULT IS 9600K BAUD
+ 378   1              REN     = 1;                                            // RECEIVE ENABLED
+ 379   1              ES              = 1;                                            // ENABLE SERIAL
+ 380   1              EA              = 1;                                            // ALL INTERRUPTS OK
+ 381   1              RI              = 0;                                            // CLR RECEIVE FLAG
+ 382   1              TI              = 0;                                            // CLR TRANSMIT FLAG
+ 383   1      }
+ 384          //;************************************************
+ 385          void setup_pwm(void)
+ 386          {
+ 387   1              PWMCON = 0x5F;                                          //
+ 388   1              PWM1L  = 0xFF;                                          // p2.6 resolution
+ 389   1              PWM1H  = 0xFF;                                          // p2.7 resolution
+ 390   1              PWM0L  = 0xFF;                                          // PWM0 DUTY CYCLE OUTPUT P2.6
+ 391   1              PWM0H  = 0xFF;                                          // PWM1 DUTY CYCLE OUTPUT P2.7
+ 392   1      }
+ 393          //;************************************************
+ 394          void setup_dac(void)
+ 395          {
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 8   
+
+ 396   1              ADCCON1 = 0x80;                                         // TURN ADC ON / ADC HAS TO BE ON FOR DAC TO WORK
+ 397   1              DACCON  = 0xFF;                                         // SET DAC TO 8 BIT / 0 TO +3.3VDC AND TURN DAC0 ON
+ 398   1              DAC0L   = 0x00;                                         // RESET TO 0
+ 399   1              DAC0H   = 0x00;                                         // RESET TO 0
+ 400   1              DAC1L   = 0x00;                                         // RESET TO 0
+ 401   1              DAC1H   = 0x00;                                         // RESET TO 0
+ 402   1      }
+ 403          //;************************************************
+ 404          void reset_everything(void)
+ 405          {
+ 406   1      if(reset_bit)                                                   // check to see if reset flag is set
+ 407   1              {
+ 408   2              display_dim_byte = 0x00;
+ 409   2                                                                                      
+ 410   2              PWM0L = 0xFF;
+ 411   2              PWM0H = 0xFF;                                           // reset display dimming
+ 412   2      
+ 413   2              DAC0L   = 0x00;                                         // RESET TO 0
+ 414   2              DAC1L   = 0x87;                                         // SET TO MIDSCALE
+ 415   2      
+ 416   2              PBYTE[0x80] = 0xFF;                                     // DAC_Data_Out(7 downto 0) <= AddrData;
+ 417   2              PBYTE[0x81] = 0x07;                                     // DAC_Data_Out(11 downto 8)
+ 418   2      
+ 419   2              csa = 0;
+ 420   2              wr  = 0;
+ 421   2              wr  = 1;
+ 422   2              csa = 1;
+ 423   2              
+ 424   2              RS_fpga_firmware[0] = PBYTE[2];
+ 425   2              RS_fpga_firmware[1] = PBYTE[3];
+ 426   2              RS_fpga_firmware[2] = PBYTE[4];
+ 427   2              RS_fpga_firmware[3] = PBYTE[5];
+ 428   2      
+ 429   2              reset_bit = 0;
+ 430   2          }
+ 431   1      }
+ 432          //;************************************************
+ 433          void update_dac(void)
+ 434          {
+ 435   1      if(update_display_contrast_bit)
+ 436   1              {
+ 437   2      
+ 438   2              s_contrast_msn = contrast_msn; 
+ 439   2              s_contrast_lsn = contrast_lsn;
+ 440   2      
+ 441   2              tempreceive = contrast_msn;
+ 442   2              convert_to_receive();
+ 443   2              contrast_msn = tempreceive;
+ 444   2          
+ 445   2              tempreceive = contrast_lsn;
+ 446   2          convert_to_receive();
+ 447   2              contrast_lsn = tempreceive; 
+ 448   2              
+ 449   2              contrast_msn = (contrast_msn << 4) & 0xF0;
+ 450   2              contrast_lsn = contrast_lsn & 0x0F;
+ 451   2              
+ 452   2              contrast_byte = contrast_msn | contrast_lsn;
+ 453   2      
+ 454   2              DAC1L = contrast_value[contrast_byte];
+ 455   2      //;************************************************    
+ 456   2              if(echo == 0x31)                                                                //; send contrast echo
+ 457   2              {
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 9   
+
+ 458   3              SBUF = CONTROL_COMMAND;
+ 459   3              transmit_data();
+ 460   3              SBUF = CONTRAST_ID;
+ 461   3              transmit_data();
+ 462   3              SBUF = s_contrast_msn;
+ 463   3              transmit_data();
+ 464   3              SBUF = s_contrast_lsn;
+ 465   3              transmit_data();
+ 466   3              SBUF = 0x0D;
+ 467   3              transmit_data();
+ 468   3              SBUF = 0x0A;
+ 469   3              transmit_data();
+ 470   3              }  
+ 471   2      //;************************************************
+ 472   2              update_display_contrast_bit = 0;
+ 473   2      //;************************************************
+ 474   2              }
+ 475   1      }
+ 476          //;************************************************
+ 477          void update_skidball(void)
+ 478          {
+ 479   1      if(update_skidball_bit)
+ 480   1      {
+ 481   2              s_skidball_msn = skidball_msn; 
+ 482   2              s_skidball_lsn = skidball_lsn;
+ 483   2      
+ 484   2          tempreceive = skidball_msn;
+ 485   2              convert_to_receive();
+ 486   2              skidball_msn = tempreceive;
+ 487   2          
+ 488   2              tempreceive = skidball_lsn;
+ 489   2          convert_to_receive();
+ 490   2              skidball_lsn = tempreceive; 
+ 491   2              
+ 492   2              skidball_msn = (skidball_msn << 4) & 0xF0;
+ 493   2              skidball_lsn = skidball_lsn & 0x0F;
+ 494   2              
+ 495   2              skidball_byte = skidball_msn | skidball_lsn;
+ 496   2      
+ 497   2              look_up_value = skid_value[skidball_byte];
+ 498   2      
+ 499   2              tempskidlo = (look_up_value & 0xFF);
+ 500   2              tempskidhi = (look_up_value >> 8) & 0x0F;
+ 501   2      
+ 502   2              PBYTE[0x80] = tempskidlo;                                               //; DAC_Data_Out(7 downto 0) <= AddrData;
+ 503   2              PBYTE[0x81] = tempskidhi;                                               //; DAC_Data_Out(11 downto 8)
+ 504   2      
+ 505   2              csa = 0;
+ 506   2              wr  = 0;
+ 507   2              wr  = 1;
+ 508   2              csa = 1;
+ 509   2      //;************************************************    
+ 510   2              if(echo == 0x31)                                                                //; send skidball echo
+ 511   2              {
+ 512   3              SBUF = CONTROL_COMMAND;
+ 513   3              transmit_data();
+ 514   3              SBUF = SKIDBALL_ID;
+ 515   3              transmit_data();
+ 516   3              SBUF = s_skidball_msn;
+ 517   3              transmit_data();
+ 518   3              SBUF = s_skidball_lsn;
+ 519   3              transmit_data();
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 10  
+
+ 520   3              SBUF = 0x0D;
+ 521   3              transmit_data();
+ 522   3              SBUF = 0x0A;
+ 523   3              transmit_data();
+ 524   3              }
+ 525   2      //;************************************************     
+ 526   2              update_skidball_bit = 0;
+ 527   2      //;************************************************
+ 528   2              }
+ 529   1      }
+ 530          //;************************************************
+ 531          void encoder(void)
+ 532          {
+ 533   1              Abyte = PBYTE[0x35];
+ 534   1              if(Abyte != enc_byte)
+ 535   1              {
+ 536   2              enc_byte = Abyte;
+ 537   2      
+ 538   2              enc_msn = (enc_byte >> 4) & 0x0F;
+ 539   2              enc_lsn = enc_byte & 0x0F;    
+ 540   2              
+ 541   2              temptransmit = enc_msn;
+ 542   2              convert_to_transmit();
+ 543   2              enc_msn = temptransmit;
+ 544   2      
+ 545   2              temptransmit = enc_lsn;
+ 546   2              convert_to_transmit();
+ 547   2              enc_lsn = temptransmit;
+ 548   2              
+ 549   2      if(realtime == 0x30)
+ 550   2              {
+ 551   3              SBUF = ENC_POT_STATUS;          //;0x28
+ 552   3              transmit_data();
+ 553   3              SBUF = ENC_ID;                          //;0x58                         
+ 554   3              transmit_data();
+ 555   3              SBUF = enc_msn;                         //;0-9,A-F      
+ 556   3              transmit_data();
+ 557   3              SBUF = enc_lsn;                         //;0-9,A-F      
+ 558   3              transmit_data();
+ 559   3              SBUF = 0x0D;                            //;Return       
+ 560   3              transmit_data();
+ 561   3              SBUF = 0x0A;                            //;New Line     
+ 562   3              transmit_data();
+ 563   3              }
+ 564   2              }
+ 565   1      if(send_encoder_status)
+ 566   1          {
+ 567   2              SBUF = ENC_POT_STATUS;          //;0x28
+ 568   2              transmit_data();
+ 569   2              SBUF = ENC_ID;                          //;0x58                         
+ 570   2              transmit_data();
+ 571   2              SBUF = enc_msn;                         //;0-9,A-F      
+ 572   2              transmit_data();
+ 573   2              SBUF = enc_lsn;                         //;0-9,A-F      
+ 574   2              transmit_data();
+ 575   2              SBUF = 0x0D;                            //;Return       
+ 576   2              transmit_data();
+ 577   2              SBUF = 0x0A;                            //;New Line     
+ 578   2              transmit_data();
+ 579   2              send_encoder_status = 0;
+ 580   2              
+ 581   2              if(echo == 0x31)                                                                //; send encoder echo
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 11  
+
+ 582   2              {
+ 583   3              DELAY_LOOP_Wait(100);
+ 584   3              SBUF = ENC_POT_STATUS;          //;0x28
+ 585   3              transmit_data();
+ 586   3              SBUF = ENC_ID;                          //;0x58                         
+ 587   3              transmit_data();
+ 588   3              SBUF = 0x0D;                            //;Return       
+ 589   3              transmit_data();
+ 590   3              SBUF = 0x0A;                            //;New Line     
+ 591   3              transmit_data();
+ 592   3              }       
+ 593   2              }
+ 594   1      }
+ 595          //;************************************************
+ 596          void keyboardsend(void)
+ 597          {if(realtime == 0x30)
+ 598   1              {
+ 599   2              SBUF = SWITCH_STATUS;
+ 600   2              transmit_data();
+ 601   2              SBUF = KEYADDRESS;
+ 602   2              transmit_data();
+ 603   2              SBUF = KEYDATA;
+ 604   2              transmit_data();
+ 605   2              SBUF = 0x0D;
+ 606   2              transmit_data();
+ 607   2              SBUF = 0x0A;
+ 608   2              transmit_data();        
+ 609   2              }
+ 610   1      }
+ 611          //;************************************************
+ 612          void row_1(void)
+ 613          {unsigned int i;
+ 614   1              for(i = 0; i <= 8; i++)                         // LOAD DEBOUNCE COUNT
+ 615   1                      {Abyte = PBYTE[0x30];                           // 
+ 616   2                       Abyte = ~Abyte;                                        // COMPLIMENT THE DATA IN ABYTE
+ 617   2                       Bbyte = Abyte;}                                        // STORE A COPY OF IT IN Bbyte
+ 618   1              if(Abyte != SWOLD1)                                             // has there been a change      
+ 619   1               {Abyte = Abyte ^ SWOLD1;                               // XOR new value with old to see what changed
+ 620   2                      if(Abyte != 0)                                          //
+ 621   2                      {SWOLD1 = Bbyte;}                                       // change detected store new value for comparison next time around
+ 622   2      //41                                                                    
+ 623   2                if(Abyte0 != 1)goto CHK_42;
+ 624   2                if(Bbyte0 == 1)                                               
+ 625   2                {
+ 626   3                 KEYADDRESS = PB_41;
+ 627   3                 KEYDATA = BUTTON_PRESSED;
+ 628   3                 PB_41_Status = BUTTON_PRESSED;                                               
+ 629   3                 keyboardsend();}
+ 630   2                if(Bbyte0 == 0)                                               
+ 631   2                {
+ 632   3                 KEYADDRESS = PB_41;
+ 633   3                 KEYDATA = BUTTON_RELEASED;
+ 634   3                 PB_41_Status = BUTTON_RELEASED;                                              
+ 635   3                 keyboardsend();}                                     
+ 636   2      CHK_42:                                                                 
+ 637   2                if(Abyte1 != 1)goto CHK_43;
+ 638   2                if(Bbyte1 == 1)                                               
+ 639   2                {
+ 640   3                 KEYADDRESS = PB_42;
+ 641   3                 KEYDATA = BUTTON_PRESSED;
+ 642   3                 PB_42_Status = BUTTON_PRESSED;                                               
+ 643   3                 keyboardsend();}
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 12  
+
+ 644   2                if(Bbyte1 == 0)                                               
+ 645   2                {
+ 646   3                 KEYADDRESS = PB_42;
+ 647   3                 KEYDATA = BUTTON_RELEASED;
+ 648   3                 PB_42_Status = BUTTON_RELEASED;                                              
+ 649   3                 keyboardsend();}     
+ 650   2      CHK_43:                                                                 
+ 651   2                if(Abyte2 != 1)goto CHK_44;
+ 652   2                if(Bbyte2 == 1)                                               
+ 653   2                {
+ 654   3                 KEYADDRESS = PB_43;
+ 655   3                 KEYDATA = BUTTON_PRESSED;
+ 656   3                 PB_43_Status = BUTTON_PRESSED;                                               
+ 657   3                 keyboardsend();}
+ 658   2                if(Bbyte2 == 0)                                               
+ 659   2                {
+ 660   3                 KEYADDRESS = PB_43;
+ 661   3                 KEYDATA = BUTTON_RELEASED;
+ 662   3                 PB_43_Status = BUTTON_RELEASED;                                              
+ 663   3                 keyboardsend();}     
+ 664   2      CHK_44:                                                                 
+ 665   2                if(Abyte3 != 1)goto CHK_45;
+ 666   2                if(Bbyte3 == 1)                                               
+ 667   2                {
+ 668   3                 KEYADDRESS = PB_44;
+ 669   3                 KEYDATA = BUTTON_PRESSED;
+ 670   3                 PB_44_Status = BUTTON_PRESSED;                                               
+ 671   3                 keyboardsend();}
+ 672   2                if(Bbyte3 == 0)                                               
+ 673   2                {
+ 674   3                 KEYADDRESS = PB_44;
+ 675   3                 KEYDATA = BUTTON_RELEASED;
+ 676   3                 PB_44_Status = BUTTON_RELEASED;                                              
+ 677   3                 keyboardsend();}             
+ 678   2      CHK_45:                                                                 
+ 679   2                if(Abyte4 != 1)goto CHK_46;
+ 680   2                if(Bbyte4 == 1)                                               
+ 681   2                {
+ 682   3                 KEYADDRESS = PB_45;
+ 683   3                 KEYDATA = BUTTON_PRESSED;
+ 684   3                 PB_45_Status = BUTTON_PRESSED;                                               
+ 685   3                 keyboardsend();}
+ 686   2                if(Bbyte4 == 0)                                               
+ 687   2                {
+ 688   3                 KEYADDRESS = PB_45;
+ 689   3                 KEYDATA = BUTTON_RELEASED;
+ 690   3                 PB_45_Status = BUTTON_RELEASED;                                              
+ 691   3                 keyboardsend();}     
+ 692   2      CHK_46:                                                                 
+ 693   2                if(Abyte5 != 1)return;
+ 694   2                if(Bbyte5 == 1)                                               
+ 695   2                {
+ 696   3                 KEYADDRESS = PB_46;
+ 697   3                 KEYDATA = BUTTON_PRESSED;
+ 698   3                 PB_46_Status = BUTTON_PRESSED;                                               
+ 699   3                 keyboardsend();}
+ 700   2                if(Bbyte5 == 0)                                               
+ 701   2                {
+ 702   3                 KEYADDRESS = PB_46;
+ 703   3                 KEYDATA = BUTTON_RELEASED;
+ 704   3                 PB_46_Status = BUTTON_RELEASED;                                              
+ 705   3                 keyboardsend();}             
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 13  
+
+ 706   2              }                                                                               
+ 707   1      }
+ 708          //;************************************************
+ 709          void row_2(void)
+ 710          {unsigned int i;
+ 711   1              for(i = 0; i <= 8; i++)                         // LOAD DEBOUNCE COUNT
+ 712   1                      {Abyte = PBYTE[0x31];                           // 
+ 713   2                       Abyte = ~Abyte;                                        // COMPLIMENT THE DATA IN ABYTE
+ 714   2                       Bbyte = Abyte;}                                        // STORE A COPY OF IT IN Bbyte
+ 715   1              if(Abyte != SWOLD2)                                             // has there been a change      
+ 716   1               {Abyte = Abyte ^ SWOLD2;                               // XOR new value with old to see what changed
+ 717   2                      if(Abyte != 0)                                          //
+ 718   2                      {SWOLD2 = Bbyte;}                                       // change detected store new value for comparison next time around
+ 719   2      //47                                                                    
+ 720   2                if(Abyte0 != 1)goto CHK_48;
+ 721   2                if(Bbyte0 == 1)                                               
+ 722   2                {
+ 723   3                 KEYADDRESS = PB_47;
+ 724   3                 KEYDATA = BUTTON_PRESSED;
+ 725   3                 PB_47_Status = BUTTON_PRESSED;                                               
+ 726   3                 keyboardsend();}
+ 727   2                if(Bbyte0 == 0)                                               
+ 728   2                {
+ 729   3                 KEYADDRESS = PB_47;
+ 730   3                 KEYDATA = BUTTON_RELEASED; 
+ 731   3                 PB_47_Status = BUTTON_RELEASED;                                              
+ 732   3                 keyboardsend();}                                     
+ 733   2      CHK_48:                                                                 
+ 734   2                if(Abyte1 != 1)goto CHK_49;
+ 735   2                if(Bbyte1 == 1)                                               
+ 736   2                {
+ 737   3                 KEYADDRESS = PB_48;
+ 738   3                 KEYDATA = BUTTON_PRESSED;
+ 739   3                 PB_48_Status = BUTTON_PRESSED;                                               
+ 740   3                 keyboardsend();}
+ 741   2                if(Bbyte1 == 0)                                               
+ 742   2                {
+ 743   3                 KEYADDRESS = PB_48;
+ 744   3                 KEYDATA = BUTTON_RELEASED;
+ 745   3                 PB_48_Status = BUTTON_RELEASED;                                              
+ 746   3                 keyboardsend();}     
+ 747   2      CHK_49:                                                                 
+ 748   2                if(Abyte2 != 1)goto CHK_4A;
+ 749   2                if(Bbyte2 == 1)                                               
+ 750   2                {
+ 751   3                 KEYADDRESS = PB_49;
+ 752   3                 KEYDATA = BUTTON_PRESSED;
+ 753   3                 PB_49_Status = BUTTON_PRESSED;                                               
+ 754   3                 keyboardsend();}
+ 755   2                if(Bbyte2 == 0)                                               
+ 756   2                {
+ 757   3                 KEYADDRESS = PB_49;
+ 758   3                 KEYDATA = BUTTON_RELEASED;
+ 759   3                 PB_49_Status = BUTTON_RELEASED;                                              
+ 760   3                 keyboardsend();}     
+ 761   2      CHK_4A:                                                                 
+ 762   2                if(Abyte3 != 1)goto CHK_4B;
+ 763   2                if(Bbyte3 == 1)                                               
+ 764   2                {
+ 765   3                 KEYADDRESS = PB_4A;
+ 766   3                 KEYDATA = BUTTON_PRESSED;
+ 767   3                 PB_4A_Status = BUTTON_PRESSED;                                               
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 14  
+
+ 768   3                 keyboardsend();}
+ 769   2                if(Bbyte3 == 0)                                               
+ 770   2                {
+ 771   3                 KEYADDRESS = PB_4A;
+ 772   3                 KEYDATA = BUTTON_RELEASED;
+ 773   3                 PB_4A_Status = BUTTON_RELEASED;                                              
+ 774   3                 keyboardsend();}             
+ 775   2      CHK_4B:                                                                 
+ 776   2                if(Abyte4 != 1)return;
+ 777   2                if(Bbyte4 == 1)                                               
+ 778   2                {
+ 779   3                 KEYADDRESS = PB_4B;
+ 780   3                 KEYDATA = BUTTON_PRESSED;
+ 781   3                 PB_4B_Status = BUTTON_PRESSED;                                               
+ 782   3                 keyboardsend();}
+ 783   2                if(Bbyte4 == 0)                                               
+ 784   2                {
+ 785   3                 KEYADDRESS = PB_4B;
+ 786   3                 KEYDATA = BUTTON_RELEASED;
+ 787   3                 PB_4B_Status = BUTTON_RELEASED;                                              
+ 788   3                 keyboardsend();}     
+ 789   2              }                                                                               
+ 790   1      }
+ 791          //;************************************************
+ 792          void row_3(void)
+ 793          {unsigned int i;
+ 794   1              for(i = 0; i <= 8; i++)                         // LOAD DEBOUNCE COUNT
+ 795   1                      {Abyte = PBYTE[0x32];                           // 
+ 796   2                       Abyte = ~Abyte;                                        // COMPLIMENT THE DATA IN ABYTE
+ 797   2                       Bbyte = Abyte;}                                        // STORE A COPY OF IT IN Bbyte
+ 798   1              if(Abyte != SWOLD3)                                             // has there been a change      
+ 799   1               {Abyte = Abyte ^ SWOLD3;                               // XOR new value with old to see what changed
+ 800   2                      if(Abyte != 0)                                          //
+ 801   2                      {SWOLD3 = Bbyte;}                                       // change detected store new value for comparison next time around
+ 802   2      //4C                                                                    
+ 803   2                if(Abyte0 != 1)goto CHK_4D;
+ 804   2                if(Bbyte0 == 1)                                               
+ 805   2                {
+ 806   3                 KEYADDRESS = PB_4C;
+ 807   3                 KEYDATA = BUTTON_PRESSED;
+ 808   3                 PB_4C_Status = BUTTON_PRESSED;                                               
+ 809   3                 keyboardsend();}
+ 810   2                if(Bbyte0 == 0)                                               
+ 811   2                {
+ 812   3                 KEYADDRESS = PB_4C;
+ 813   3                 KEYDATA = BUTTON_RELEASED;
+ 814   3                 PB_4C_Status = BUTTON_RELEASED;                                              
+ 815   3                 keyboardsend();}                                     
+ 816   2      CHK_4D:                                                                 
+ 817   2                if(Abyte1 != 1)goto CHK_4E;
+ 818   2                if(Bbyte1 == 1)                                               
+ 819   2                {
+ 820   3                 KEYADDRESS = PB_4D;
+ 821   3                 KEYDATA = BUTTON_PRESSED;
+ 822   3                 PB_4D_Status = BUTTON_PRESSED;                                               
+ 823   3                 keyboardsend();}
+ 824   2                if(Bbyte1 == 0)                                               
+ 825   2                {
+ 826   3                 KEYADDRESS = PB_4D;
+ 827   3                 KEYDATA = BUTTON_RELEASED;
+ 828   3                 PB_4D_Status = BUTTON_RELEASED;                                              
+ 829   3                 keyboardsend();}     
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 15  
+
+ 830   2      CHK_4E:                                                                 
+ 831   2                if(Abyte2 != 1)goto CHK_4F;
+ 832   2                if(Bbyte2 == 1)                                               
+ 833   2                {
+ 834   3                 KEYADDRESS = PB_4E;
+ 835   3                 KEYDATA = BUTTON_PRESSED;
+ 836   3                 PB_4E_Status = BUTTON_PRESSED;                                               
+ 837   3                 keyboardsend();}
+ 838   2                if(Bbyte2 == 0)                                               
+ 839   2                {
+ 840   3                 KEYADDRESS = PB_4E;
+ 841   3                 KEYDATA = BUTTON_RELEASED;
+ 842   3                 PB_4E_Status = BUTTON_RELEASED;                                              
+ 843   3                 keyboardsend();}     
+ 844   2      CHK_4F:                                                                 
+ 845   2                if(Abyte3 != 1)goto CHK_50;
+ 846   2                if(Bbyte3 == 1)                                               
+ 847   2                {
+ 848   3                 KEYADDRESS = PB_4F;
+ 849   3                 KEYDATA = BUTTON_PRESSED;
+ 850   3                 PB_4F_Status = BUTTON_PRESSED;                                               
+ 851   3                 keyboardsend();}
+ 852   2                if(Bbyte3 == 0)                                               
+ 853   2                {
+ 854   3                 KEYADDRESS = PB_4F;
+ 855   3                 KEYDATA = BUTTON_RELEASED;
+ 856   3                 PB_4F_Status = BUTTON_RELEASED;                                              
+ 857   3                 keyboardsend();}             
+ 858   2      CHK_50:                                                                 
+ 859   2                if(Abyte4 != 1)goto CHK_51;
+ 860   2                if(Bbyte4 == 1)                                               
+ 861   2                {
+ 862   3                 KEYADDRESS = PB_50;
+ 863   3                 KEYDATA = BUTTON_PRESSED;
+ 864   3                 PB_50_Status = BUTTON_PRESSED;                                               
+ 865   3                 keyboardsend();}
+ 866   2                if(Bbyte4 == 0)                                               
+ 867   2                {
+ 868   3                 KEYADDRESS = PB_50;
+ 869   3                 KEYDATA = BUTTON_RELEASED;
+ 870   3                 PB_50_Status = BUTTON_RELEASED;                                              
+ 871   3                 keyboardsend();}     
+ 872   2      CHK_51:                                                                 
+ 873   2                if(Abyte5 != 1)return;
+ 874   2                if(Bbyte5 == 1)                                               
+ 875   2                {
+ 876   3                 KEYADDRESS = PB_51;
+ 877   3                 KEYDATA = BUTTON_PRESSED;
+ 878   3                 PB_51_Status = BUTTON_PRESSED;                                               
+ 879   3                 keyboardsend();}
+ 880   2                if(Bbyte5 == 0)                                               
+ 881   2                {
+ 882   3                 KEYADDRESS = PB_51;
+ 883   3                 KEYDATA = BUTTON_RELEASED; 
+ 884   3                 PB_51_Status = BUTTON_RELEASED;                                              
+ 885   3                 keyboardsend();}             
+ 886   2              }                                                                               
+ 887   1      }
+ 888          //;************************************************
+ 889          void row_4(void)
+ 890          {unsigned int i;
+ 891   1              for(i = 0; i <= 8; i++)                         // LOAD DEBOUNCE COUNT
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 16  
+
+ 892   1                      {Abyte = PBYTE[0x33];                           // 
+ 893   2                       Abyte = ~Abyte;                                        // COMPLIMENT THE DATA IN ABYTE
+ 894   2                       Bbyte = Abyte;}                                        // STORE A COPY OF IT IN Bbyte
+ 895   1              if(Abyte != SWOLD4)                                             // has there been a change      
+ 896   1               {Abyte = Abyte ^ SWOLD4;                               // XOR new value with old to see what changed
+ 897   2                      if(Abyte != 0)                                          //
+ 898   2                      {SWOLD4 = Bbyte;}                                       // change detected store new value for comparison next time around
+ 899   2      //52                                                                    
+ 900   2                if(Abyte0 != 1)return;
+ 901   2                if(Bbyte0 == 1)                                               
+ 902   2                {
+ 903   3                 KEYADDRESS = BRT_PB;
+ 904   3                 KEYDATA = BUTTON_PRESSED;
+ 905   3                 BRT_PB_Status = BUTTON_PRESSED;                                              
+ 906   3                 keyboardsend();}
+ 907   2                if(Bbyte0 == 0)                                               
+ 908   2                {
+ 909   3                 KEYADDRESS = BRT_PB;
+ 910   3                 KEYDATA = BUTTON_RELEASED;
+ 911   3                 BRT_PB_Status = BUTTON_RELEASED;                                             
+ 912   3                 keyboardsend();}     
+ 913   2                }
+ 914   1      }
+ 915          //;************************************************
+ 916          void row_5(void)
+ 917          {unsigned int i;
+ 918   1              for(i = 0; i <= 8; i++)                         // LOAD DEBOUNCE COUNT
+ 919   1                      {Abyte = PBYTE[0x34];                           // 
+ 920   2                       Abyte = ~Abyte;                                        // COMPLIMENT THE DATA IN ABYTE
+ 921   2                       Bbyte = Abyte;}                                        // STORE A COPY OF IT IN Bbyte
+ 922   1              if(Abyte != SWOLD5)                                             // has there been a change      
+ 923   1               {Abyte = Abyte ^ SWOLD5;                               // XOR new value with old to see what changed
+ 924   2                      if(Abyte != 0)                                          //
+ 925   2                      {SWOLD5 = Bbyte;}                                       // change detected store new value for comparison next time around
+ 926   2      //53                                                                    
+ 927   2                if(Abyte0 != 1)return;
+ 928   2                if(Bbyte0 == 1)                                               
+ 929   2                {
+ 930   3                 KEYADDRESS = ENC_PB;
+ 931   3                 KEYDATA = BUTTON_PRESSED;
+ 932   3                 ENC_PB_Status = BUTTON_PRESSED;                                              
+ 933   3                 keyboardsend();}
+ 934   2                if(Bbyte0 == 0)                                               
+ 935   2                {
+ 936   3                 KEYADDRESS = ENC_PB;
+ 937   3                 KEYDATA = BUTTON_RELEASED;
+ 938   3                 ENC_PB_Status = BUTTON_RELEASED;                                             
+ 939   3                 keyboardsend();}     
+ 940   2                }
+ 941   1      }
+ 942          //;************************************************
+ 943          void transmit_data(void)
+ 944          {
+ 945   1              while(!TI);             
+ 946   1              TI = 0;
+ 947   1      }
+ 948          //;************************************************
+ 949          void receive_data(void)
+ 950          {
+ 951   1              while(!RI);             
+ 952   1              RI = 0;
+ 953   1      }
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 17  
+
+ 954          //;************************************************
+ 955          void convert_to_receive(void)
+ 956          {
+ 957   1            if (tempreceive < 0x41)
+ 958   1            tempreceive = (tempreceive - 0x30);
+ 959   1            else
+ 960   1            tempreceive = (tempreceive - 0x37);
+ 961   1      }
+ 962          //;************************************************
+ 963          void convert_to_transmit(void)
+ 964          {
+ 965   1            if (temptransmit < 0x0A)
+ 966   1            temptransmit = (temptransmit + 0x30);
+ 967   1            else
+ 968   1            temptransmit = (temptransmit + 0x37);
+ 969   1      }
+ 970          //;************************************************
+ 971          void clk_adc(void)
+ 972          {
+ 973   1              ADC_clk = 1;
+ 974   1              ADC_clk = 0;
+ 975   1      }
+ 976          //;************************************************
+ 977          void adc_read(void)
+ 978          {       
+ 979   1      //unsigned long int i,j;
+ 980   1              //j = 0;
+ 981   1              //difference = 0;
+ 982   1              
+ 983   1              //for(i = 0; i < 256; i++)
+ 984   1              //{
+ 985   1              ADC_clk = 1;                                                                    // adc clock high
+ 986   1          ADC_cs = 1;                                                                         // adc cs high
+ 987   1          ADC_cs = 0;                                                                         // adc chip select lo
+ 988   1      while(ADC_data == 0);                                                           // wait for end of conversion
+ 989   1                      clk_adc();                                                                      //
+ 990   1                      clk_adc();                                                                      //
+ 991   1                      clk_adc();                                                                      //
+ 992   1                      clk_adc();                                                                      // channel id
+ 993   1                      Abyte = 0x00;
+ 994   1                      clk_adc();
+ 995   1                      Abyte7 = ADC_data;              
+ 996   1                      clk_adc();
+ 997   1                      Abyte6 = ADC_data;
+ 998   1                      clk_adc();
+ 999   1                      Abyte5 = ADC_data;              
+1000   1                      clk_adc();
+1001   1                      Abyte4 = ADC_data;
+1002   1                      clk_adc();
+1003   1                      Abyte3 = ADC_data;              
+1004   1                      clk_adc(); 
+1005   1                      Abyte2 = ADC_data;
+1006   1                      clk_adc(); 
+1007   1                      Abyte1 = ADC_data;
+1008   1                      clk_adc(); 
+1009   1                      Abyte0 = ADC_data;              
+1010   1                      clk_adc();                                                                      // d3           
+1011   1                      clk_adc();                                                                      // d2           
+1012   1                      clk_adc();                                                                      // d1
+1013   1                      clk_adc();                                                                      // d0
+1014   1                      j += Abyte;
+1015   1              //}
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 18  
+
+1016   1      }
+1017          //;************************************************
+1018          void average_adc(void)
+1019          {
+1020   1      //      j = (j >> 8);                                                           // divide by ?
+1021   1              j = (j / 100);
+1022   1              Abyte = j;                                                                      // new adc value
+1023   1              new_brt_byte = Abyte;
+1024   1      //;************************************************     
+1025   1              if(new_brt_byte != old_brt_byte)
+1026   1              {
+1027   2              Bbyte = new_brt_byte;                                                   // old value to B
+1028   2              Bbyte -= old_brt_byte;                                                  // subtract new from old
+1029   2      
+1030   2      //;************************************************
+1031   2              if(Bbyte7 == 0)                                                         // difference is positive value
+1032   2              {
+1033   3              difference = Bbyte;
+1034   3              }
+1035   2      //;************************************************             
+1036   2              if(Bbyte7 == 1)                                                         // negative value convert 2's complement
+1037   2              {                                                                       
+1038   3              Bbyte = ~Bbyte;                                                 // begin 2's complement conversion
+1039   3              Bbyte = Bbyte + 1;                                              // add 1 to finsish process
+1040   3              difference = Bbyte;
+1041   3              }
+1042   2      //;************************************************                             
+1043   2              if(difference > 0x01)                                   // update pwm if change is greater than 1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+             -xxxxxxxxxxxxxxxx              
+1044   2              {
+1045   3      //;************************************************     
+1046   3              if(brt_control == 0x30)
+1047   3              {
+1048   4      //;************************************************     
+1049   4              if(new_brt_byte == 0x00)
+1050   4              {PBYTE[0x82] = 0x00;}
+1051   4              else
+1052   4              {PBYTE[0x82] = 0x01;}
+1053   4      //;************************************************     
+1054   4              if(new_brt_byte < 0x80)
+1055   4              {
+1056   5              day_night = 0;
+1057   5              PWM0L = dim_value[new_brt_byte];
+1058   5              PWM0H = ~bezel_dim_byte;                
+1059   5              }
+1060   4      //;************************************************
+1061   4      if((old_brt_byte < 0x80) && (new_brt_byte > 0x7F))
+1062   4              {   
+1063   5          PBYTE[0x82] = 0x00;
+1064   5              PWM0L = dim_value[new_brt_byte];        
+1065   5              PWM0H = ~bezel_dim_byte;
+1066   5              DELAY_LOOP_Wait(25);
+1067   5              day_night = 1;
+1068   5          DELAY_LOOP_Wait(25);
+1069   5              PBYTE[0x82] = 0x01;
+1070   5              }                                                        
+1071   4      //;************************************************     
+1072   4              if(Abyte > 0x7F)
+1073   4              {
+1074   5              day_night = 1;
+1075   5              PWM0L = dim_value[new_brt_byte];                
+1076   5              PWM0H = ~bezel_dim_byte;                
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 19  
+
+1077   5              }
+1078   4              }
+1079   3              //}
+1080   3      //;************************************************
+1081   3              brt_msn = (new_brt_byte >> 4) & 0x0F;
+1082   3              brt_lsn = new_brt_byte & 0x0F;    
+1083   3              
+1084   3              temptransmit = brt_msn;
+1085   3              convert_to_transmit();
+1086   3              brt_msn = temptransmit;
+1087   3      
+1088   3              temptransmit = brt_lsn;
+1089   3              convert_to_transmit();
+1090   3              brt_lsn = temptransmit;
+1091   3      //;************************************************
+1092   3      if(realtime == 0x30)
+1093   3              {
+1094   4              SBUF = ENC_POT_STATUS;          //;0x28
+1095   4              transmit_data();
+1096   4              SBUF = POT_ID;                          //;0x58                         
+1097   4              transmit_data();
+1098   4              SBUF = brt_msn;                         //;0-9,A-F      
+1099   4              transmit_data();
+1100   4              SBUF = brt_lsn;                         //;0-9,A-F      
+1101   4              transmit_data();
+1102   4              SBUF = 0x0D;                            //;Return       
+1103   4              transmit_data();
+1104   4              SBUF = 0x0A;                            //;New Line     
+1105   4              transmit_data();
+1106   4              }
+1107   3              old_brt_byte = new_brt_byte;    
+1108   3              }
+1109   2              }
+1110   1      //;************************************************
+1111   1      if(send_pot_status)
+1112   1          {
+1113   2              SBUF = ENC_POT_STATUS;          //;0x28
+1114   2              transmit_data();
+1115   2              SBUF = POT_ID;                          //;0x58                         
+1116   2              transmit_data();
+1117   2              SBUF = brt_msn;                         //;0-9,A-F      
+1118   2              transmit_data();
+1119   2              SBUF = brt_lsn;                         //;0-9,A-F      
+1120   2              transmit_data();
+1121   2              SBUF = 0x0D;                            //;Return       
+1122   2              transmit_data();
+1123   2              SBUF = 0x0A;                            //;New Line     
+1124   2              transmit_data();
+1125   2              send_pot_status = 0;
+1126   2      //;************************************************
+1127   2              if(echo == 0x31)                                                                //; send encoder echo
+1128   2              {
+1129   3              DELAY_LOOP_Wait(100);
+1130   3              SBUF = ENC_POT_STATUS;          //;0x28
+1131   3              transmit_data();
+1132   3              SBUF = POT_ID;                          //;0x58                         
+1133   3              transmit_data();
+1134   3              SBUF = 0x0D;                            //;Return       
+1135   3              transmit_data();
+1136   3              SBUF = 0x0A;                            //;New Line     
+1137   3              transmit_data();
+1138   3              }       
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 20  
+
+1139   2              }
+1140   1      //;************************************************
+1141   1      }
+1142          //;************************************************
+1143          void update_dimming(void)
+1144          {
+1145   1      if(brt_control == 0x31)
+1146   1      {
+1147   2      if(update_display_dimming_bit)
+1148   2              {
+1149   3              s_display_dim_msn = display_dim_msn;
+1150   3              s_display_dim_lsn = display_dim_lsn;
+1151   3      
+1152   3              tempreceive = display_dim_msn;
+1153   3              convert_to_receive();
+1154   3              display_dim_msn = tempreceive;
+1155   3          
+1156   3              tempreceive = display_dim_lsn;
+1157   3          convert_to_receive();
+1158   3              display_dim_lsn = tempreceive; 
+1159   3              
+1160   3              display_dim_msn = (display_dim_msn << 4) & 0xF0;
+1161   3              display_dim_lsn = display_dim_lsn & 0x0F;
+1162   3              
+1163   3              display_dim_byte = display_dim_msn | display_dim_lsn;
+1164   3      //;************************************************     
+1165   3              if(display_dim_byte == 0x00)
+1166   3              {PBYTE[0x82] = 0x00;}
+1167   3              else
+1168   3              {PBYTE[0x82] = 0x01;}
+1169   3      //;************************************************     
+1170   3              if(display_dim_byte < 0x80)
+1171   3              {
+1172   4              day_night = 0;
+1173   4              PWM0L = dim_value[display_dim_byte];
+1174   4              PWM0H = ~bezel_dim_byte;                
+1175   4              }
+1176   3      //;************************************************
+1177   3      if((old_display_dim_byte < 0x80) && (display_dim_byte > 0x7F))
+1178   3              {   
+1179   4          PBYTE[0x82] = 0x00;
+1180   4              PWM0L = dim_value[display_dim_byte];    
+1181   4              PWM0H = ~bezel_dim_byte;
+1182   4              DELAY_LOOP_Wait(25);
+1183   4              day_night = 1;
+1184   4          DELAY_LOOP_Wait(25);
+1185   4              PBYTE[0x82] = 0x01;
+1186   4              }                                                        
+1187   3      //;************************************************     
+1188   3              if(display_dim_byte > 0x7F)
+1189   3              {
+1190   4              day_night = 1;
+1191   4              PWM0L = dim_value[display_dim_byte];            
+1192   4              PWM0H = ~bezel_dim_byte;                
+1193   4              }
+1194   3      //;************************************************
+1195   3              old_display_dim_byte = display_dim_byte;
+1196   3      //;************************************************    
+1197   3              if(echo == 0x31)                                                                //; send display dim echo
+1198   3              {
+1199   4              SBUF = CONTROL_COMMAND;
+1200   4              transmit_data();
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 21  
+
+1201   4              SBUF = DISPLAY_DIM_ID;
+1202   4              transmit_data();
+1203   4              SBUF = s_display_dim_msn;
+1204   4              transmit_data();
+1205   4              SBUF = s_display_dim_lsn;
+1206   4              transmit_data();
+1207   4              SBUF = 0x0D;
+1208   4              transmit_data();
+1209   4              SBUF = 0x0A;
+1210   4              transmit_data();
+1211   4              }       
+1212   3      //;************************************************     
+1213   3              update_display_dimming_bit = 0;
+1214   3      //;************************************************
+1215   3              }
+1216   2      }
+1217   1      //;************************************************
+1218   1      if(update_bezel_dimming_bit)
+1219   1              {
+1220   2              s_bezel_dim_msn = bezel_dim_msn;
+1221   2              s_bezel_dim_lsn = bezel_dim_lsn;
+1222   2      
+1223   2              tempreceive = bezel_dim_msn;
+1224   2              convert_to_receive();
+1225   2              bezel_dim_msn = tempreceive;
+1226   2          
+1227   2              tempreceive = bezel_dim_lsn;
+1228   2          convert_to_receive();
+1229   2              bezel_dim_lsn = tempreceive; 
+1230   2              
+1231   2              bezel_dim_msn = (bezel_dim_msn << 4) & 0xF0;
+1232   2              bezel_dim_lsn = bezel_dim_lsn & 0x0F;
+1233   2              
+1234   2              bezel_dim_byte = bezel_dim_msn | bezel_dim_lsn;
+1235   2              
+1236   2              //PWM0L = dim_value[display_dim_byte];
+1237   2              //PWM0H = ~bezel_dim_byte;
+1238   2              
+1239   2              if(brt_control == 0x30)
+1240   2              {
+1241   3              PWM0L = dim_value[old_brt_byte];
+1242   3              //display_dim_byte = dim_value[brt_byte];
+1243   3              PWM0H = ~bezel_dim_byte;
+1244   3              }
+1245   2              else
+1246   2              {
+1247   3              PWM0L = dim_value[display_dim_byte];
+1248   3              //brt_byte = dim_value[display_dim_byte];
+1249   3              PWM0H = ~bezel_dim_byte;
+1250   3              }
+1251   2      //;************************************************    
+1252   2              if(echo == 0x31)                                                                //; send bezel dim echo
+1253   2              {
+1254   3              SBUF = CONTROL_COMMAND;
+1255   3              transmit_data();
+1256   3              SBUF = BEZEL_DIM_ID;
+1257   3              transmit_data();
+1258   3              SBUF = s_bezel_dim_msn;
+1259   3              transmit_data();
+1260   3              SBUF = s_bezel_dim_lsn;
+1261   3              transmit_data();
+1262   3              SBUF = 0x0D;
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 22  
+
+1263   3              transmit_data();
+1264   3              SBUF = 0x0A;
+1265   3              transmit_data();
+1266   3              }
+1267   2      //;************************************************     
+1268   2              update_bezel_dimming_bit = 0;
+1269   2      //;************************************************ 
+1270   2              }  
+1271   1      }
+1272          //;************************************************
+1273          void send_status(void)
+1274          {
+1275   1      if(send_status_bit)
+1276   1              {
+1277   2      //;************************************************
+1278   2              ACC     = PANEL_STATUS;
+1279   2              SBUF = ACC;                                                     //1
+1280   2              transmit_data();
+1281   2      //;************************************************
+1282   2              ACC = PB_41_Status;                                     //2 
+1283   2              SBUF = ACC;     
+1284   2              transmit_data();
+1285   2      //;************************************************
+1286   2              ACC = PB_42_Status;                                     //3
+1287   2              SBUF = ACC;     
+1288   2              transmit_data();
+1289   2      //;************************************************
+1290   2              ACC = PB_43_Status;                                     //4 
+1291   2              SBUF = ACC;     
+1292   2              transmit_data();
+1293   2      //;************************************************
+1294   2              ACC = PB_44_Status;                                     //5
+1295   2              SBUF = ACC;     
+1296   2              transmit_data();
+1297   2      //;************************************************
+1298   2              ACC = PB_45_Status;                                     //6
+1299   2              SBUF = ACC;     
+1300   2              transmit_data();
+1301   2      //;************************************************
+1302   2              ACC = PB_46_Status;                                     //7
+1303   2              SBUF = ACC;     
+1304   2              transmit_data();
+1305   2      //;************************************************
+1306   2              ACC = PB_47_Status;                                     //8 
+1307   2              SBUF = ACC;     
+1308   2              transmit_data();
+1309   2      //;************************************************
+1310   2              ACC = PB_48_Status;                                     //9
+1311   2              SBUF = ACC;     
+1312   2              transmit_data();
+1313   2      //;************************************************
+1314   2              ACC = PB_49_Status;                                     //10
+1315   2              SBUF = ACC;     
+1316   2              transmit_data();
+1317   2      //;************************************************
+1318   2              ACC = PB_4A_Status;                                     //11
+1319   2              SBUF = ACC;     
+1320   2              transmit_data();
+1321   2      //;************************************************
+1322   2              ACC = PB_4B_Status;                                     //12
+1323   2              SBUF = ACC;     
+1324   2              transmit_data();
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 23  
+
+1325   2      //;************************************************
+1326   2              ACC = PB_4C_Status;                                     //13 
+1327   2              SBUF = ACC;     
+1328   2              transmit_data();
+1329   2      //;************************************************
+1330   2              ACC = PB_4D_Status;                                     //14    
+1331   2              SBUF = ACC;     
+1332   2              transmit_data();
+1333   2      //;************************************************
+1334   2              ACC = PB_4E_Status;                                     //15 
+1335   2              SBUF = ACC;     
+1336   2              transmit_data();
+1337   2      //;************************************************
+1338   2              ACC = PB_4F_Status;                                     //16 
+1339   2              SBUF = ACC;     
+1340   2              transmit_data();
+1341   2      //;************************************************
+1342   2              ACC = PB_50_Status;                                     //17
+1343   2              SBUF = ACC;     
+1344   2              transmit_data();
+1345   2      //;************************************************
+1346   2              ACC = PB_51_Status;                                     //18 
+1347   2              SBUF = ACC;     
+1348   2              transmit_data();
+1349   2      //;************************************************
+1350   2              ACC = BRT_PB_Status;                            //19 
+1351   2              SBUF = ACC;     
+1352   2              transmit_data();        
+1353   2      //;************************************************
+1354   2              ACC = ENC_PB_Status;                            //20 
+1355   2              SBUF = ACC;     
+1356   2              transmit_data();
+1357   2      //;************************************************
+1358   2              ACC = 0x00;                                                     //21
+1359   2              SBUF = ACC;     
+1360   2              transmit_data();
+1361   2      //;************************************************
+1362   2              ACC = 0x00;                                                     //22 
+1363   2              SBUF = ACC;     
+1364   2              transmit_data();
+1365   2      //;************************************************
+1366   2              ACC = brt_msn;                                          //23 
+1367   2              SBUF = ACC;     
+1368   2              transmit_data();
+1369   2      //;************************************************
+1370   2              ACC = brt_lsn;                                          //24
+1371   2              SBUF = ACC;     
+1372   2              transmit_data();
+1373   2      //;************************************************
+1374   2              ACC = enc_msn;                                          //25
+1375   2              SBUF = ACC;     
+1376   2              transmit_data();
+1377   2      //;************************************************
+1378   2              ACC = enc_lsn;                                          //26
+1379   2              SBUF = ACC;     
+1380   2              transmit_data();
+1381   2      //;************************************************
+1382   2              ACC = s_display_dim_msn;                        //27 
+1383   2              SBUF = ACC;     
+1384   2              transmit_data();
+1385   2      //;************************************************
+1386   2              ACC = s_display_dim_lsn;                        //28 
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 24  
+
+1387   2              SBUF = ACC;     
+1388   2              transmit_data();
+1389   2      //;************************************************
+1390   2              ACC = s_contrast_msn;                           //29
+1391   2              SBUF = ACC;     
+1392   2              transmit_data();
+1393   2      //;************************************************
+1394   2              ACC = s_contrast_lsn;                           //30
+1395   2              SBUF = ACC;     
+1396   2              transmit_data();
+1397   2      //;************************************************
+1398   2              ACC = s_bezel_dim_msn;                          //31
+1399   2              SBUF = ACC;     
+1400   2              transmit_data();
+1401   2      //;************************************************
+1402   2              ACC = s_bezel_dim_lsn;                          //32
+1403   2              SBUF = ACC;     
+1404   2              transmit_data();
+1405   2      //;************************************************
+1406   2              ACC = s_skidball_msn;                           //33 
+1407   2              SBUF = ACC;     
+1408   2              transmit_data();
+1409   2      //;************************************************
+1410   2              ACC = s_skidball_lsn;                           //34
+1411   2              SBUF = ACC;     
+1412   2              transmit_data();
+1413   2      //;************************************************
+1414   2              ACC = 0x00;                                                     //35
+1415   2              SBUF = ACC;     
+1416   2              transmit_data();
+1417   2      //;************************************************
+1418   2              ACC = 0x00;                                                     //36
+1419   2              SBUF = ACC;     
+1420   2              transmit_data();
+1421   2      //;************************************************
+1422   2              ACC = 0x0D;                                                     //37 
+1423   2              SBUF = ACC;     
+1424   2              transmit_data();
+1425   2      //;************************************************
+1426   2              ACC = 0x0A;                                                     //38
+1427   2              SBUF = ACC;     
+1428   2              transmit_data();
+1429   2      //;************************************************
+1430   2              if(echo == 0x31)                                                                //; send panel status request echo
+1431   2              {
+1432   3              DELAY_LOOP_Wait(100);
+1433   3              SBUF = PANEL_STATUS;
+1434   3              transmit_data();
+1435   3              SBUF = 0x0D;
+1436   3              transmit_data();
+1437   3              SBUF = 0x0A;
+1438   3              transmit_data();
+1439   3              }
+1440   2              send_status_bit = 0;
+1441   2      //;************************************************
+1442   2              }
+1443   1      }
+1444          //;************************************************
+1445          void send_single_sw_status(void)
+1446          {
+1447   1      if(send_single_switch_status)
+1448   1              {
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 25  
+
+1449   2      //;************************************************
+1450   2              if(switch_id == 0x41)
+1451   2              {
+1452   3              Switch_Data = PB_41_Status;
+1453   3              switch_send();
+1454   3              }       
+1455   2              if(switch_id == 0x42)
+1456   2              {
+1457   3              Switch_Data = PB_42_Status;
+1458   3              switch_send();
+1459   3              }       
+1460   2              if(switch_id == 0x43)
+1461   2              {
+1462   3              Switch_Data = PB_43_Status;
+1463   3              switch_send();
+1464   3              }
+1465   2              if(switch_id == 0x44)
+1466   2              {
+1467   3              Switch_Data = PB_44_Status;
+1468   3              switch_send();
+1469   3              }
+1470   2              if(switch_id == 0x45)
+1471   2              {
+1472   3              Switch_Data = PB_45_Status;
+1473   3              switch_send();
+1474   3              }
+1475   2              if(switch_id == 0x46)
+1476   2              {
+1477   3              Switch_Data = PB_46_Status;
+1478   3              switch_send();
+1479   3              }
+1480   2              if(switch_id == 0x47)
+1481   2              {
+1482   3              Switch_Data = PB_47_Status;
+1483   3              switch_send();
+1484   3              }
+1485   2              if(switch_id == 0x48)
+1486   2              {
+1487   3              Switch_Data = PB_48_Status;
+1488   3              switch_send();
+1489   3              }
+1490   2              if(switch_id == 0x49)
+1491   2              {
+1492   3              Switch_Data = PB_49_Status;
+1493   3              switch_send();
+1494   3              }
+1495   2              if(switch_id == 0x4A)
+1496   2              {
+1497   3              Switch_Data = PB_4A_Status;
+1498   3              switch_send();
+1499   3              }
+1500   2              if(switch_id == 0x4B)
+1501   2              {
+1502   3              Switch_Data = PB_4B_Status;
+1503   3              switch_send();
+1504   3              }
+1505   2              if(switch_id == 0x4C)
+1506   2              {
+1507   3              Switch_Data = PB_4C_Status;
+1508   3              switch_send();
+1509   3              }
+1510   2              if(switch_id == 0x4D)
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 26  
+
+1511   2              {
+1512   3              Switch_Data = PB_4D_Status;
+1513   3              switch_send();
+1514   3              }
+1515   2              if(switch_id == 0x4E)
+1516   2              {
+1517   3              Switch_Data = PB_4E_Status;
+1518   3              switch_send();     
+1519   3              }
+1520   2              if(switch_id == 0x4F)
+1521   2              {
+1522   3              Switch_Data = PB_4F_Status;
+1523   3              switch_send();
+1524   3              }
+1525   2              if(switch_id == 0x50)
+1526   2              {
+1527   3              Switch_Data = PB_50_Status;
+1528   3              switch_send();
+1529   3              }
+1530   2              if(switch_id == 0x51)
+1531   2              {
+1532   3              Switch_Data = PB_51_Status;
+1533   3              switch_send();
+1534   3              }
+1535   2              if(switch_id == 0x52)
+1536   2              {
+1537   3              Switch_Data = BRT_PB_Status;
+1538   3              switch_send();
+1539   3              }
+1540   2              if(switch_id == 0x53)
+1541   2              {
+1542   3              Switch_Data = ENC_PB_Status;
+1543   3              switch_send();
+1544   3              }
+1545   2      //;************************************************    
+1546   2              if(echo == 0x31)                                                                //; send echo
+1547   2              {
+1548   3              DELAY_LOOP_Wait(100);
+1549   3              SBUF = SWITCH_STATUS;
+1550   3              transmit_data();
+1551   3              SBUF = switch_id;
+1552   3              transmit_data();
+1553   3              SBUF = 0x0D;
+1554   3              transmit_data();
+1555   3              SBUF = 0x0A;
+1556   3              transmit_data();
+1557   3              }
+1558   2              send_single_switch_status = 0;
+1559   2      //;************************************************
+1560   2              }
+1561   1      }
+1562          //;************************************************
+1563          void switch_send(void)
+1564          {
+1565   1              SBUF = SWITCH_STATUS;
+1566   1              transmit_data();
+1567   1              SBUF = switch_id;
+1568   1              transmit_data();
+1569   1              SBUF = Switch_Data;
+1570   1              transmit_data();
+1571   1              SBUF = 0x0D;
+1572   1              transmit_data();
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 27  
+
+1573   1              SBUF = 0x0A;
+1574   1              transmit_data();        
+1575   1      }
+1576          //;************************************************
+1577          void send_command_values(void)
+1578          {
+1579   1      if(send_display_dim_values)
+1580   1              {
+1581   2              SBUF = CONTROL_COMMAND;
+1582   2              transmit_data();
+1583   2      //;************************************************     
+1584   2              SBUF = DISPLAY_DIM_ID;
+1585   2              transmit_data();
+1586   2      //;************************************************     
+1587   2              SBUF = s_display_dim_msn;
+1588   2              transmit_data();
+1589   2      //;************************************************
+1590   2              SBUF = s_display_dim_lsn;
+1591   2              transmit_data();
+1592   2      //;************************************************     
+1593   2              SBUF = 0x0D;
+1594   2              transmit_data();
+1595   2      //;************************************************     
+1596   2              SBUF = 0x0A;
+1597   2              transmit_data();
+1598   2      //;************************************************     
+1599   2              send_display_dim_values = 0;
+1600   2      //;************************************************
+1601   2              if(echo == 0x31)                                                                //; send command dim echo
+1602   2              {
+1603   3              DELAY_LOOP_Wait(100);
+1604   3              SBUF = CONTROL_COMMAND;
+1605   3              transmit_data();
+1606   3      //;************************************************     
+1607   3              SBUF = DISPLAY_DIM_ID;
+1608   3              transmit_data();
+1609   3              SBUF = 0x0D;
+1610   3              transmit_data();
+1611   3      //;************************************************     
+1612   3              SBUF = 0x0A;
+1613   3              transmit_data();
+1614   3              }       
+1615   2              }
+1616   1      //;************************************************
+1617   1      if(send_contrast_values)
+1618   1              {
+1619   2              SBUF = CONTROL_COMMAND;
+1620   2              transmit_data();
+1621   2      //;************************************************     
+1622   2              SBUF = CONTRAST_ID;
+1623   2              transmit_data();
+1624   2      //;************************************************     
+1625   2              SBUF = s_contrast_msn;
+1626   2              transmit_data();
+1627   2      //;************************************************
+1628   2              SBUF = s_contrast_lsn;
+1629   2              transmit_data();
+1630   2      //;************************************************     
+1631   2              SBUF = 0x0D;
+1632   2              transmit_data();
+1633   2      //;************************************************     
+1634   2              SBUF = 0x0A;
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 28  
+
+1635   2              transmit_data();
+1636   2      //;************************************************     
+1637   2              send_contrast_values = 0;
+1638   2      //;************************************************
+1639   2              if(echo == 0x31)                                                                //; send command dim echo
+1640   2              {
+1641   3              DELAY_LOOP_Wait(100);
+1642   3              SBUF = CONTROL_COMMAND;
+1643   3              transmit_data();
+1644   3      //;************************************************     
+1645   3              SBUF = CONTRAST_ID;
+1646   3              transmit_data();
+1647   3              SBUF = 0x0D;
+1648   3              transmit_data();
+1649   3      //;************************************************     
+1650   3              SBUF = 0x0A;
+1651   3              transmit_data();
+1652   3              }       
+1653   2              }
+1654   1      //;************************************************
+1655   1      if(send_bezel_dim_values)
+1656   1              {
+1657   2              SBUF = CONTROL_COMMAND;
+1658   2              transmit_data();
+1659   2      //;************************************************     
+1660   2              SBUF = BEZEL_DIM_ID;
+1661   2              transmit_data();
+1662   2      //;************************************************     
+1663   2              SBUF = s_bezel_dim_msn;
+1664   2              transmit_data();
+1665   2      //;************************************************
+1666   2              SBUF = s_bezel_dim_lsn;
+1667   2              transmit_data();
+1668   2      //;************************************************     
+1669   2              SBUF = 0x0D;
+1670   2              transmit_data();
+1671   2      //;************************************************     
+1672   2              SBUF = 0x0A;
+1673   2              transmit_data();
+1674   2      //;************************************************
+1675   2              send_bezel_dim_values = 0;
+1676   2      //;************************************************     
+1677   2              if(echo == 0x31)                                                                //; send command dim echo
+1678   2              {
+1679   3              DELAY_LOOP_Wait(100);
+1680   3              SBUF = CONTROL_COMMAND;
+1681   3              transmit_data();
+1682   3      //;************************************************     
+1683   3              SBUF = BEZEL_DIM_ID;
+1684   3              transmit_data();
+1685   3              SBUF = 0x0D;
+1686   3              transmit_data();
+1687   3      //;************************************************     
+1688   3              SBUF = 0x0A;
+1689   3              transmit_data();
+1690   3              }
+1691   2      //;************************************************     
+1692   2              }
+1693   1      //;************************************************
+1694   1      if(send_skidball_values)
+1695   1              {
+1696   2              SBUF = CONTROL_COMMAND;
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 29  
+
+1697   2              transmit_data();
+1698   2      //;************************************************     
+1699   2              SBUF = SKIDBALL_ID;
+1700   2              transmit_data();
+1701   2      //;************************************************     
+1702   2              SBUF = s_skidball_msn;
+1703   2              transmit_data();
+1704   2      //;************************************************
+1705   2              SBUF = s_skidball_lsn;
+1706   2              transmit_data();
+1707   2      //;************************************************     
+1708   2              SBUF = 0x0D;
+1709   2              transmit_data();
+1710   2      //;************************************************     
+1711   2              SBUF = 0x0A;
+1712   2              transmit_data();
+1713   2      //;************************************************     
+1714   2              send_skidball_values = 0;
+1715   2      //;************************************************
+1716   2              if(echo == 0x31)                                                                //; send command dim echo
+1717   2              {
+1718   3              DELAY_LOOP_Wait(100);
+1719   3              SBUF = SKIDBALL_ID;
+1720   3              transmit_data();
+1721   3      //;************************************************     
+1722   3              SBUF = BEZEL_DIM_ID;
+1723   3              transmit_data();
+1724   3              SBUF = 0x0D;
+1725   3              transmit_data();
+1726   3      //;************************************************     
+1727   3              SBUF = 0x0A;
+1728   3              transmit_data();
+1729   3              }
+1730   2              }
+1731   1      //;************************************************
+1732   1      }
+1733          //;************************************************
+1734          void send_option_values(void)
+1735          {
+1736   1      if(send_echo_value)
+1737   1              {
+1738   2              ACC = OPTIONS;
+1739   2              SBUF = ACC;
+1740   2              transmit_data();
+1741   2      //;************************************************     
+1742   2              ACC = ECHO_OPTION_ID;
+1743   2              SBUF = ACC;
+1744   2              transmit_data();
+1745   2      //;************************************************     
+1746   2              ACC = 0x30;
+1747   2              SBUF = ACC;
+1748   2              transmit_data();
+1749   2      //;************************************************
+1750   2              ACC = echo;
+1751   2              SBUF = ACC;
+1752   2              transmit_data();
+1753   2      //;************************************************     
+1754   2              ACC = 0x0D;
+1755   2              SBUF = ACC;
+1756   2              transmit_data();
+1757   2      //;************************************************     
+1758   2              ACC = 0x0A;
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 30  
+
+1759   2              SBUF = ACC;
+1760   2              transmit_data();
+1761   2      //;************************************************     
+1762   2              send_echo_value = 0;
+1763   2      //;************************************************
+1764   2              if(echo == 0x31)                                                                //; send command dim echo
+1765   2              {
+1766   3              DELAY_LOOP_Wait(100);
+1767   3              SBUF = OPTIONS;
+1768   3              transmit_data();
+1769   3      //;************************************************     
+1770   3              SBUF = ECHO_OPTION_ID;
+1771   3              transmit_data();
+1772   3              SBUF = 0x0D;
+1773   3              transmit_data();
+1774   3      //;************************************************     
+1775   3              SBUF = 0x0A;
+1776   3              transmit_data();
+1777   3              }       
+1778   2              }
+1779   1      //;************************************************
+1780   1      if(send_realtime_value)
+1781   1              {
+1782   2              SBUF = OPTIONS;
+1783   2              transmit_data();
+1784   2      //;************************************************     
+1785   2              SBUF = REALTIME_OPTION_ID;
+1786   2              transmit_data();
+1787   2      //;************************************************     
+1788   2              SBUF = 0x30;
+1789   2              transmit_data();
+1790   2      //;************************************************
+1791   2              SBUF = realtime;
+1792   2              transmit_data();
+1793   2      //;************************************************     
+1794   2              SBUF = 0x0D;
+1795   2              transmit_data();
+1796   2      //;************************************************     
+1797   2              SBUF = 0x0A;
+1798   2              transmit_data();
+1799   2      //;************************************************     
+1800   2              send_realtime_value = 0;
+1801   2      //;************************************************
+1802   2              if(echo == 0x31)                                                                //; send command dim echo
+1803   2              {
+1804   3              DELAY_LOOP_Wait(100);
+1805   3              SBUF = OPTIONS;
+1806   3              transmit_data();
+1807   3      //;************************************************     
+1808   3              SBUF = REALTIME_OPTION_ID;
+1809   3              transmit_data();
+1810   3              SBUF = 0x0D;
+1811   3              transmit_data();
+1812   3      //;************************************************     
+1813   3              SBUF = 0x0A;
+1814   3              transmit_data();
+1815   3              }
+1816   2              }
+1817   1      //;************************************************
+1818   1      if(send_lcd_value)
+1819   1              {
+1820   2              SBUF = OPTIONS;
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 31  
+
+1821   2              transmit_data();
+1822   2      //;************************************************     
+1823   2              SBUF = BRT_CTRL_OPTION_ID;
+1824   2              transmit_data();
+1825   2      //;************************************************     
+1826   2              SBUF = 0x30;
+1827   2              transmit_data();
+1828   2      //;************************************************
+1829   2              SBUF = brt_control;
+1830   2              transmit_data();
+1831   2      //;************************************************     
+1832   2              SBUF = 0x0D;
+1833   2              transmit_data();
+1834   2      //;************************************************     
+1835   2              SBUF = 0x0A;
+1836   2              transmit_data();
+1837   2      //;************************************************     
+1838   2              send_lcd_value = 0;
+1839   2      //;************************************************
+1840   2              if(echo == 0x31)                                                                //; send command dim echo
+1841   2              {
+1842   3              DELAY_LOOP_Wait(100);
+1843   3              SBUF = OPTIONS;
+1844   3              transmit_data();
+1845   3      //;************************************************     
+1846   3              SBUF = BRT_CTRL_OPTION_ID;
+1847   3              transmit_data();
+1848   3              SBUF = 0x0D;
+1849   3              transmit_data();
+1850   3      //;************************************************     
+1851   3              SBUF = 0x0A;
+1852   3              transmit_data();
+1853   3              }
+1854   2              }
+1855   1      //;************************************************
+1856   1      }
+1857          //;************************************************
+1858          void SER_INT(void) interrupt 4
+1859          {
+1860   1      unsigned char hold_byte,temp_byte,control_byte,option_byte;
+1861   1      
+1862   1      if(!TI)
+1863   1      TI = 0;
+1864   1      //;************************************************
+1865   1              if (RI)
+1866   1              {hold_byte = SBUF;                                              
+1867   2               RI = 0;
+1868   2      //;************************************************                                                                     
+1869   2                      switch(hold_byte)                                               // 
+1870   2                               {
+1871   3      //;************************************************                                                                     
+1872   3                              case SWITCH_STATUS:                                     //; 0x24
+1873   3                                      receive_data(); 
+1874   3                                      switch_id = SBUF;
+1875   3                                      receive_data();                                 //; 0x0D
+1876   3                                      receive_data();                                 //; 0x0A
+1877   3                                      send_single_switch_status = 1;
+1878   3                              break;
+1879   3      //;************************************************
+1880   3                              case PANEL_STATUS:                                      //; 0x26
+1881   3                                      receive_data();                                 //; 0x0D
+1882   3                                      receive_data();                                 //; 0x0A
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 32  
+
+1883   3                                      send_status_bit = 1;                    
+1884   3                              break;
+1885   3      //;************************************************
+1886   3                              case CONTROL_COMMAND:                           //; 0x23                                 
+1887   3                                       
+1888   3                                      receive_data();
+1889   3                                      temp_byte = SBUF;
+1890   3      //;************************************************
+1891   3      //;DISPLAY DIMMING
+1892   3      //;************************************************                     
+1893   3                              if(temp_byte == DISPLAY_DIM_ID)
+1894   3                                      {                       
+1895   4                                      receive_data();
+1896   4                                      control_byte = SBUF;
+1897   4                                      if(control_byte == 0x0D)
+1898   4                                      {
+1899   5                                      receive_data();                                 //; 0x0A
+1900   5                                      send_display_dim_values = 1;                            
+1901   5                                      break;
+1902   5                                      }
+1903   4                                      else
+1904   4                                      {
+1905   5                                      display_dim_msn = SBUF;
+1906   5                                      receive_data();
+1907   5                                      display_dim_lsn = SBUF;
+1908   5                                      update_display_dimming_bit = 1;
+1909   5                                      }
+1910   4                                      }
+1911   3      //;************************************************
+1912   3      //;DISPLAY CONTRAST     
+1913   3      //;************************************************             
+1914   3                              if(temp_byte == CONTRAST_ID)
+1915   3                                      {                       
+1916   4                                      receive_data();
+1917   4                                      control_byte = SBUF;
+1918   4                                      if(control_byte == 0x0D)
+1919   4                                      {                               
+1920   5                                      receive_data();                                 //; 0x0A
+1921   5                                      send_contrast_values = 1;
+1922   5                                      break;
+1923   5                                      }
+1924   4                                      else
+1925   4                                      {
+1926   5                                      contrast_msn = SBUF;
+1927   5                                      receive_data();
+1928   5                                      contrast_lsn = SBUF;
+1929   5                                      update_display_contrast_bit = 1;
+1930   5                                      }
+1931   4                                      }
+1932   3      //;************************************************                     
+1933   3      //:BEZEL DIMMING
+1934   3      //;************************************************                     
+1935   3                              if(temp_byte == BEZEL_DIM_ID)
+1936   3                                      {
+1937   4                                      receive_data();
+1938   4                                      control_byte = SBUF;
+1939   4                                      if(control_byte == 0x0D)
+1940   4                                      {
+1941   5                                      receive_data();                                 //; 0x0A
+1942   5                                      send_bezel_dim_values = 1;
+1943   5                                      break;
+1944   5                                      }
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 33  
+
+1945   4                                      else
+1946   4                                      {
+1947   5                                      bezel_dim_msn = SBUF;                           
+1948   5                                      receive_data();
+1949   5                                      bezel_dim_lsn = SBUF;
+1950   5                                      update_bezel_dimming_bit = 1;
+1951   5                                      }
+1952   4                                      }
+1953   3      //;************************************************                                                             
+1954   3      //;SKIDBALL CONTROL
+1955   3      //;************************************************
+1956   3                              if(temp_byte == SKIDBALL_ID)
+1957   3                                      {
+1958   4                                      receive_data();
+1959   4                                      control_byte = SBUF;
+1960   4                                      if(control_byte == 0x0D)
+1961   4                                      {
+1962   5                                      receive_data();                                 //; 0x0A
+1963   5                                      send_skidball_values = 1;
+1964   5                                      break;
+1965   5                                      }
+1966   4                                      else
+1967   4                                      {
+1968   5                                      skidball_msn = SBUF;                            
+1969   5                                      receive_data();
+1970   5                                      skidball_lsn = SBUF;
+1971   5                                      update_skidball_bit = 1;
+1972   5                                      }
+1973   4                                      }
+1974   3                                      receive_data();                                 //; 0x0D
+1975   3                                      receive_data();                                 //; 0x0A
+1976   3                              break;                                                  
+1977   3      //;************************************************
+1978   3                              case OPTIONS:                                           //; 0x25
+1979   3                                      receive_data();
+1980   3                                      temp_byte = SBUF;
+1981   3      //;************************************************
+1982   3      //;ECHO OPTION
+1983   3      //;************************************************                     
+1984   3                              if(temp_byte == ECHO_OPTION_ID)
+1985   3                                      {
+1986   4                                      receive_data();
+1987   4                                      option_byte = SBUF;
+1988   4                                      if(option_byte == 0x0D)
+1989   4                                      {
+1990   5                                      receive_data();                                 //; 0x0A
+1991   5                                      send_echo_value = 1;
+1992   5                                      break;
+1993   5                                      }
+1994   4                                      else
+1995   4                                      {                                                                                               
+1996   5                                      receive_data();
+1997   5                                      echo = SBUF;
+1998   5                                      }
+1999   4                                      }
+2000   3      //;************************************************
+2001   3      //;SEND ON CHANGE OPTION
+2002   3      //;************************************************                     
+2003   3                              if(temp_byte == REALTIME_OPTION_ID)
+2004   3                                      {
+2005   4                                      receive_data();
+2006   4                                      option_byte = SBUF;
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 34  
+
+2007   4                                      if(option_byte == 0x0D)
+2008   4                                      {
+2009   5                                      receive_data();                                 //; 0x0A
+2010   5                                      send_realtime_value = 1;
+2011   5                                      break;
+2012   5                                      }
+2013   4                                      else
+2014   4                                      {
+2015   5                                      receive_data();
+2016   5                                      realtime = SBUF;
+2017   5                                      }
+2018   4                                      }
+2019   3      //;************************************************                     
+2020   3      //:LCD BRIGHTNESS CONTROL OPTION
+2021   3      //;************************************************                     
+2022   3                              if(temp_byte == BRT_CTRL_OPTION_ID)
+2023   3                                      {
+2024   4                                      receive_data();
+2025   4                                      option_byte = SBUF;
+2026   4                                      if(option_byte == 0x0D)
+2027   4                                      {
+2028   5                                      receive_data();                                 //; 0x0A
+2029   5                                      send_lcd_value = 1;
+2030   5                                      break;
+2031   5                                      }
+2032   4                                      else
+2033   4                                      {
+2034   5                                      receive_data();
+2035   5                                      brt_control = SBUF;
+2036   5                                      }
+2037   4                                      }                               
+2038   3                                      receive_data();                                 //; 0x0D
+2039   3                                      receive_data();                                 //; 0x0A
+2040   3                              break;
+2041   3      //;************************************************
+2042   3                              case ENC_POT_STATUS:                            //; 0x28        
+2043   3      
+2044   3                                      receive_data();
+2045   3                                      temp_byte = SBUF;
+2046   3      //;BRT POT STATUS                       
+2047   3                              if(temp_byte == POT_ID)
+2048   3                                      {
+2049   4                                      send_pot_status = 1;
+2050   4                                      } 
+2051   3      //;ENC STATUS                   
+2052   3                              if(temp_byte == ENC_ID)
+2053   3                                      {
+2054   4                                      send_encoder_status = 1;
+2055   4                                      }                                                               
+2056   3                                      receive_data();                                 //; 0x0D                                
+2057   3                                      receive_data();                                 //;     0x0A
+2058   3                              break;
+2059   3      //;************************************************                                     
+2060   3                              }                                                                       //; end case
+2061   2      //;************************************************             
+2062   2              }                                                                                       //end if RI
+2063   1      }
+2064          //;************************************************
+2065          //void send_programs(void)
+2066          //{
+2067          //unsigned char i;
+2068          //if(send_programs_bit)                                 // check to see if send program flag is set
+C51 COMPILER V8.06   MAIN                                                                  06/28/2022 09:35:33 PAGE 35  
+
+2069          //      {
+2070          //              SBUF = FIRMWARE_COMMAND;        
+2071          //              transmit_data();
+2072          //;micro program***********************************                     
+2073          //      for(i = 0; i < 4; i++)
+2074          //              {       
+2075          //              SBUF = RS_micro_firmware[i];    
+2076          //              transmit_data();                                    
+2077          //              }
+2078          //;fpga program************************************                     
+2079          //      for(i = 0; i < 4; i++)
+2080          //              {                       
+2081          //              SBUF = RS_fpga_firmware[i];
+2082          //              transmit_data();        
+2083          //              }
+2084          //;************************************************                             
+2085          //      send_programs_bit = 0;                          // clear the flag
+2086          //      }
+2087          //
+2088          //;************************************************
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   3579    ----
+   CONSTANT SIZE    =    784    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     87       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =     16    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

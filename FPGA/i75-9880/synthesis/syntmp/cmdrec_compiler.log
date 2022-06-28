@@ -1,0 +1,14 @@
+C:\Microsemi\Libero_SoC_v11.9\SynplifyPro\bin64\c_hdl.exe  -osyn  C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\synthesis\synwork\top_level_comp.srs  -top  work.top_level  -hdllog  C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\synthesis\synlog\top_level_compiler.srr  -encrypt  -mp  4  -verification_mode 0  -vhdl  -prodtype  synplify_pro  -nram -fixsmult -divnmod  -encrypt  -pro  -dmgen  C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\synthesis\dm  -lite -ui -fid2 -ram -sharing on -ll 2000 -autosm  -vhdl2008  -ignore_undefined_lib  -lib work C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\hdl\ClockDivider.vhd -lib work C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\hdl\RamMem.vhd -lib work C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\hdl\address_latch.vhd -lib work C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\hdl\filter.vhd -lib work C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\hdl\state_machine.vhd -lib work C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\hdl\ucounter.vhd -lib work C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\hdl\top_level.vhd 
+relcom:..\..\..\..\..\..\..\Microsemi\Libero_SoC_v11.9\SynplifyPro\bin64\c_hdl.exe -osyn ..\synwork\top_level_comp.srs -top work.top_level -hdllog ..\synlog\top_level_compiler.srr -encrypt -mp 4 -verification_mode 0 -vhdl -prodtype synplify_pro -nram -fixsmult -divnmod -encrypt -pro -dmgen ..\dm -lite -ui -fid2 -ram -sharing on -ll 2000 -autosm -vhdl2008 -ignore_undefined_lib -lib work ..\..\hdl\ClockDivider.vhd -lib work ..\..\hdl\RamMem.vhd -lib work ..\..\hdl\address_latch.vhd -lib work ..\..\hdl\filter.vhd -lib work ..\..\hdl\state_machine.vhd -lib work ..\..\hdl\ucounter.vhd -lib work ..\..\hdl\top_level.vhd
+rc:0 success:1 runtime:1
+file:..\synwork\top_level_comp.srs|io:o|time:1656435222|size:13821|exec:0|csum:
+file:..\synlog\top_level_compiler.srr|io:o|time:1656435222|size:5496|exec:0|csum:
+file:..\..\hdl\ClockDivider.vhd|io:i|time:1636564861|size:678|exec:0|csum:5BAFF82FAF0E87CD2779473902DDCD6C
+file:..\..\hdl\RamMem.vhd|io:i|time:1656428370|size:2557|exec:0|csum:9E9D2AFD80483698DEEE0BAC8AAA09CF
+file:..\..\hdl\address_latch.vhd|io:i|time:1552304933|size:668|exec:0|csum:2526AED3501549248570DC8E45F7C082
+file:..\..\hdl\filter.vhd|io:i|time:1554408384|size:2198|exec:0|csum:AB571B78FD1167AA3C046EC1C9BE2E8D
+file:..\..\hdl\state_machine.vhd|io:i|time:1637589547|size:3077|exec:0|csum:7F3FAA9E109C40FCB0FFCA5118487F6D
+file:..\..\hdl\ucounter.vhd|io:i|time:1554408410|size:854|exec:0|csum:811D570D61E16E6E9D857DDE7BA51BE8
+file:..\..\hdl\top_level.vhd|io:i|time:1656435163|size:4871|exec:0|csum:0C431C24F8387181FE0494EE5C0DFBCA
+file:..\..\..\..\..\..\..\Microsemi\Libero_SoC_v11.9\SynplifyPro\bin\c_hdl.exe|io:i|time:1509044116|size:1338368|exec:1|csum:4BE9471CC8F1F34D3F79DD6F3C07C7F5
+file:..\..\..\..\..\..\..\Microsemi\Libero_SoC_v11.9\SynplifyPro\bin64\c_hdl.exe|io:i|time:1509044324|size:1754112|exec:1|csum:0724D6BF71D325162DC071CC1383571C

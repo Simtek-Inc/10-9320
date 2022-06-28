@@ -1,0 +1,1 @@
+@W: MT530 :"c:\_swork\local_repos\10-9320\fpga\i75-9880\hdl\rammem.vhd":60:2:60:3|Found inferred clock top_level|MClk which controls 68 sequential elements including Inst_RamMem.AddrData_1[1]. This clock has no specified timing constraint which may adversely impact design performance. 

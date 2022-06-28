@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<SynplifyOutput>
+	<result>Success</result>
+	<design>top_level</design>
+	<target_edif>C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\synthesis\top_level.edn</target_edif>
+</SynplifyOutput>

@@ -1,0 +1,6 @@
+@W: CL117 :"C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\hdl\state_machine.vhd":47:2:47:5|Latch generated from process for signal change; possible missing assignment in an if or case statement.
+@W: CL117 :"C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\hdl\state_machine.vhd":47:2:47:5|Latch generated from process for signal ns(1 downto 0); possible missing assignment in an if or case statement.
+@W: CL117 :"C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\hdl\state_machine.vhd":47:2:47:5|Latch generated from process for signal dir; possible missing assignment in an if or case statement.
+@W: CL279 :"C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\hdl\ClockDivider.vhd":22:2:22:3|Pruning register bits 9 to 3 of div20Count(9 downto 0). If this is not the intended behavior, drive the inputs with valid values, or inputs from the top level.
+@W: CL169 :"C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\hdl\RamMem.vhd":60:2:60:3|Pruning unused register AddrData_cl_17(0). Make sure that there are no unused intermediate registers.
+

@@ -1,0 +1,108 @@
+
+Starting:    C:\Microsemi\Libero_SoC_v11.9\SynplifyPro\bin64\mbin\synbatch.exe
+Install:     C:\Microsemi\Libero_SoC_v11.9\SynplifyPro
+Hostname:    JMORRISON10
+Date:        Tue Jun 28 11:16:18 2022
+Version:     L-2016.09M-SP1-5
+
+Arguments:   -product synplify_pro -licensetype synplifypro_actel -batch -log synplify.log tl758903_syn.tcl
+ProductType: synplify_pro
+
+License checkout: synplifypro_actel
+License: synplifypro_actel node-locked 
+Licensed Vendor: actel
+License Option: actel_oem
+
+Running in Vendor Mode
+
+
+auto_infer_blackbox is not supported in current product.
+
+log file: "W:\W221000\W221131\10-9320\Electrical\FPGA\i75-9880\synthesis\tl758903.srr"
+
+Running: synthesis in foreground
+
+
+
+Running tl758903_syn|synthesis
+
+
+Running: compile (Compile) on tl758903_syn|synthesis
+# Tue Jun 28 11:16:19 2022
+
+
+Running: compile_flow (Compile Process) on tl758903_syn|synthesis
+# Tue Jun 28 11:16:19 2022
+
+
+Running: compiler (Compile Input) on tl758903_syn|synthesis
+# Tue Jun 28 11:16:19 2022
+
+Copied W:\W221000\W221131\10-9320\Electrical\FPGA\i75-9880\synthesis\synwork\tl758903_comp.srs to W:\W221000\W221131\10-9320\Electrical\FPGA\i75-9880\synthesis\tl758903.srs
+
+
+compiler completed
+# Tue Jun 28 11:16:24 2022
+
+Return Code: 0
+Run Time:00h:00m:05s
+
+
+Running: multi_srs_gen (Multi-srs Generator) on tl758903_syn|synthesis
+# Tue Jun 28 11:16:24 2022
+
+
+multi_srs_gen completed
+# Tue Jun 28 11:16:26 2022
+
+Return Code: 0
+Run Time:00h:00m:02s
+
+Copied W:\W221000\W221131\10-9320\Electrical\FPGA\i75-9880\synthesis\synwork\tl758903_mult.srs to W:\W221000\W221131\10-9320\Electrical\FPGA\i75-9880\synthesis\tl758903.srs
+
+Complete: Compile Process on tl758903_syn|synthesis
+
+
+Running: premap (Pre-mapping) on tl758903_syn|synthesis
+# Tue Jun 28 11:16:26 2022
+
+
+premap completed with warnings
+# Tue Jun 28 11:16:40 2022
+
+Return Code: 1
+Run Time:00h:00m:14s
+
+Complete: Compile on tl758903_syn|synthesis
+
+
+Running: map (Map) on tl758903_syn|synthesis
+# Tue Jun 28 11:16:41 2022
+
+License granted for 4 parallel jobs
+
+
+Running: fpga_mapper (Map & Optimize) on tl758903_syn|synthesis
+# Tue Jun 28 11:16:41 2022
+
+Copied W:\W221000\W221131\10-9320\Electrical\FPGA\i75-9880\synthesis\synwork\tl758903_m.srm to W:\W221000\W221131\10-9320\Electrical\FPGA\i75-9880\synthesis\tl758903.srm
+
+
+fpga_mapper completed with warnings
+# Tue Jun 28 11:16:54 2022
+
+Return Code: 1
+Run Time:00h:00m:13s
+
+Complete: Map on tl758903_syn|synthesis
+
+Complete: Logic Synthesis on tl758903_syn|synthesis
+
+TCL script complete: "tl758903_syn.tcl"
+
+exit status=0
+
+exit status=0
+
+License checkin: synplifypro_actel
+

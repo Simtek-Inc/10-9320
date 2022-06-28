@@ -1,0 +1,343 @@
+KEY LIBERO "11.9"
+KEY CAPTURE "11.9.2.1"
+KEY DEFAULT_IMPORT_LOC "G:\Datasheets\IGLOO_NANO\Led_PatternProj\Led_PatternProj\hdl"
+KEY DEFAULT_OPEN_LOC ""
+KEY ProjectID "0"
+KEY HDLTechnology "VHDL"
+KEY VERILOGMODE "VERILOG2001"
+KEY VHDLMODE "VHDL2008"
+KEY UseConstraintFlowTechnology "FALSE"
+KEY VendorTechnology_Family "ProASIC3"
+KEY VendorTechnology_Die "UM4X4M1N"
+KEY VendorTechnology_Package "vq100"
+KEY VendorTechnology_Speed "STD"
+KEY VendorTechnology_DieVoltage "1.5"
+KEY VendorTechnology_PART_RANGE "COM"
+KEY VendorTechnology_DSW_VCCA_VOLTAGE_RAMP_RATE ""
+KEY VendorTechnology_IO_DEFT_STD "LVCMOS33"
+KEY VendorTechnology_OPCONR ""
+KEY VendorTechnology_PLL_SUPPLY ""
+KEY VendorTechnology_RAD_EXPOSURE ""
+KEY VendorTechnology_RESERVEMIGRATIONPINS "1"
+KEY VendorTechnology_RESTRICTPROBEPINS "1"
+KEY VendorTechnology_RESTRICTSPIPINS "0"
+KEY VendorTechnology_SYSTEM_CONTROLLER_SUSPEND_MODE ""
+KEY VendorTechnology_TARGETDEVICESFORMIGRATION "UM4X4M1N"
+KEY VendorTechnology_TEMPR "COM"
+KEY VendorTechnology_UNUSED_MSS_IO_RESISTOR_PULL "None"
+KEY VendorTechnology_VCCI_1.5_VOLTR "COM"
+KEY VendorTechnology_VCCI_1.8_VOLTR "COM"
+KEY VendorTechnology_VCCI_2.5_VOLTR "COM"
+KEY VendorTechnology_VCCI_3.3_VOLTR "COM"
+KEY VendorTechnology_VOLTR "COM"
+KEY ProjectLocation "C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880"
+KEY ProjectDescription ""
+KEY Pa4PeripheralNewSeq "GOOD"
+KEY SimulationType "VHDL"
+KEY Vendor "Actel"
+KEY ActiveRoot "top_level::work"
+LIST REVISIONS
+VALUE="Impl1",NUM=1
+CURREV=1
+ENDLIST
+LIST FileManager
+VALUE "<project>\designer\impl1\address_latch.ide_des,ide_des"
+STATE="utd"
+TIME="1552304933"
+SIZE="208"
+ENDFILE
+VALUE "<project>\designer\impl1\tl758903.adb,adb"
+STATE="utd"
+TIME="1656434598"
+SIZE="413696"
+ENDFILE
+VALUE "<project>\designer\impl1\tl758903.ide_des,ide_des"
+STATE="utd"
+TIME="1656434598"
+SIZE="998"
+ENDFILE
+VALUE "<project>\designer\impl1\tl758903_compile_log.rpt,log"
+STATE="utd"
+TIME="1656434598"
+SIZE="8404"
+ENDFILE
+VALUE "<project>\designer\impl1\tl758903_fp\tl758903.pro,pro"
+STATE="utd"
+TIME="1656434598"
+SIZE="2247"
+ENDFILE
+VALUE "<project>\designer\impl1\top_level.ide_des,ide_des"
+STATE="utd"
+TIME="1656435175"
+SIZE="204"
+ENDFILE
+VALUE "<project>\hdl\address_latch.vhd,hdl"
+STATE="utd"
+TIME="1552304933"
+SIZE="668"
+ENDFILE
+VALUE "<project>\hdl\ClockDivider.vhd,hdl"
+STATE="utd"
+TIME="1636564861"
+SIZE="678"
+ENDFILE
+VALUE "<project>\hdl\filter.vhd,hdl"
+STATE="utd"
+TIME="1554408384"
+SIZE="2198"
+ENDFILE
+VALUE "<project>\hdl\RamMem.vhd,hdl"
+STATE="utd"
+TIME="1656428370"
+SIZE="2557"
+ENDFILE
+VALUE "<project>\hdl\state_machine.vhd,hdl"
+STATE="utd"
+TIME="1637589547"
+SIZE="3077"
+ENDFILE
+VALUE "<project>\hdl\top_level.vhd,hdl"
+STATE="utd"
+TIME="1656435163"
+SIZE="4871"
+ENDFILE
+VALUE "<project>\hdl\ucounter.vhd,hdl"
+STATE="utd"
+TIME="1554408410"
+SIZE="854"
+ENDFILE
+VALUE "<project>\synthesis\tl758903.edn,syn_edn"
+STATE="utd"
+TIME="1656434598"
+SIZE="177179"
+ENDFILE
+VALUE "<project>\synthesis\tl758903.so,so"
+STATE="utd"
+TIME="1656433012"
+SIZE="237"
+ENDFILE
+VALUE "<project>\synthesis\tl758903_sdc.sdc,syn_sdc"
+STATE="utd"
+TIME="1656434598"
+SIZE="399"
+ENDFILE
+VALUE "<project>\synthesis\tl758903_syn.prj,prj"
+STATE="utd"
+TIME="1656434598"
+SIZE="2327"
+ENDFILE
+VALUE "<project>\synthesis\top_level.edn,syn_edn"
+STATE="utd"
+TIME="1656435225"
+SIZE="177184"
+ENDFILE
+VALUE "<project>\synthesis\top_level.so,so"
+STATE="utd"
+TIME="1656434667"
+SIZE="231"
+ENDFILE
+VALUE "<project>\synthesis\top_level_sdc.sdc,syn_sdc"
+STATE="utd"
+TIME="1656435225"
+SIZE="400"
+ENDFILE
+VALUE "<project>\synthesis\top_level_syn.prj,prj"
+STATE="utd"
+TIME="1656434668"
+SIZE="2266"
+ENDFILE
+ENDLIST
+LIST UsedFile
+ENDLIST
+LIST NewModulesInfo
+LIST "top_level::work"
+FILE "<project>\hdl\top_level.vhd,hdl"
+LIST ProjectState5.1
+LIST Impl1
+LiberoState=Post_Synthesis
+ideSYNTHESIS(<project>\synthesis\top_level.edn,syn_edn)=StateSuccess
+LIST FlowOptions
+UsePhySynth=FALSE
+UseSynth=TRUE
+UseFhbAutoInst=FALSE
+ENDLIST
+Used_File_List
+ENDUsed_File_List
+ENDLIST
+ENDLIST
+ENDLIST
+ENDLIST
+LIST AssociatedStimulus
+ENDLIST
+LIST Other_Association
+ENDLIST
+LIST SimulationOptions
+UseAutomaticDoFile=true
+IncludeWaveDo=false
+Type=max
+RunTime=1000ns
+Resolution=1ps
+VsimOpt=
+EntityName=testbench
+TopInstanceName=<top>_0
+DoFileName=
+DoFileName2=wave.do
+DoFileParams=
+DisplayDUTWave=false
+LogAllSignals=false
+DisablePulseFiltering=false
+DumpVCD=false
+VCDFileName=power.vcd
+VHDL2008=false
+Verilog2001=false
+SystemVerilog=false
+TimeUnit=1
+TimeUnitBase=ns
+Precision=100
+PrecisionBase=ps
+ENDLIST
+LIST ModelSimLibPath
+UseCustomPath=FALSE
+LibraryPath=
+ENDLIST
+LIST GlobalFlowOptions
+GenerateHDLAfterSynthesis=FALSE
+GenerateHDLAfterPhySynthesis=FALSE
+RunDRCAfterSynthesis=FALSE
+AutoCheckConstraints=TRUE
+UpdateModelSimIni=TRUE
+NoIOMode=FALSE
+PeriInitStandalone=FALSE
+EnableViewDraw=FALSE
+UpdateViewDrawIni=TRUE
+GenerateHDLFromSchematic=TRUE
+VmNetlistFlowOn=FALSE
+EnableDesignSeparationOn=FALSE
+EnableSETMitigationOn=FALSE
+DisplayFanoutLimit=10
+AbortFlowOnPDCErrorsOn=TRUE
+AbortFlowOnSDCErrorsOn=TRUE
+InstantiateInSmartDesign=TRUE
+FlashProInputFile=pdb
+SmartGenCompileReport=T
+ENDLIST
+LIST PhySynthesisOptions
+ENDLIST
+LIST Profiles
+NAME="SoftConsole"
+FUNCTION="SoftwareIDE"
+TOOL="SoftConsole"
+LOCATION="eclipse.exe"
+PARAM=""
+BATCH=0
+LICENSE=""
+IS32BIT="1"
+EndProfile
+NAME="Synplify Pro ME"
+FUNCTION="Synthesis"
+TOOL="Synplify Pro ME"
+LOCATION="C:\Microsemi\Libero_SoC_v11.9\SynplifyPro\bin\synplify_pro.exe"
+PARAM="-licensetype synplifypro_actel -batch -log synplify.log"
+BATCH=1
+LICENSE=""
+IS32BIT="1"
+EndProfile
+NAME="ModelSim ME"
+FUNCTION="Simulation"
+TOOL="ModelSim"
+LOCATION="C:\Microsemi\Libero_SoC_v11.9\Modelsim\win32acoem\modelsim.exe"
+PARAM=""
+BATCH=0
+LICENSE=""
+IS32BIT="1"
+EndProfile
+NAME="FPExpress"
+FUNCTION="Program"
+TOOL="FlashPro"
+LOCATION="C:\Microsemi\Libero_SoC_v11.9\Designer\bin\FPExpress.exe"
+PARAM=""
+BATCH=0
+LICENSE=""
+IS32BIT="1"
+EndProfile
+NAME="Identify Debugger"
+FUNCTION="IdentifyDebugger"
+TOOL="Identify Debugger"
+LOCATION="C:\Microsemi\Libero_SoC_v11.9\Identify\bin\identify_debugger.exe"
+PARAM=""
+BATCH=0
+LICENSE=""
+IS32BIT="1"
+EndProfile
+ENDLIST
+LIST ProjectState5.1
+LIST "top_level::work"
+LIST Impl1
+LiberoState=Post_Synthesis
+ideSYNTHESIS(<project>\synthesis\top_level.edn,syn_edn)=StateSuccess
+LIST FlowOptions
+UsePhySynth=FALSE
+UseSynth=TRUE
+UseFhbAutoInst=FALSE
+ENDLIST
+Used_File_List
+ENDUsed_File_List
+ENDLIST
+ENDLIST
+ENDLIST
+LIST ExcludePackageForSimulation
+ENDLIST
+LIST ExcludePackageForSynthesis
+ENDLIST
+LIST IncludeModuleForSimulation
+ENDLIST
+LIST CDBOrder
+ENDLIST
+LIST UserCustomizedFileList
+ENDLIST
+LIST OpenedFileList
+ORIENTATION;HORIZONTAL
+Reports;Reports;0
+ReportsCurrentItem;Synthesize:synplify.log
+HDL;hdl\top_level.vhd;0
+HDL;hdl\ClockDivider.vhd;0
+HDL;hdl\RamMem.vhd;0
+HDL;hdl\address_latch.vhd;0
+HDL;hdl\filter.vhd;0
+HDL;hdl\state_machine.vhd;0
+HDL;hdl\ucounter.vhd;0
+StartPage;StartPage;0
+ACTIVEVIEW;Reports
+ENDLIST
+LIST ModuleSubBlockList
+LIST "address_latch::work","hdl\address_latch.vhd","FALSE","FALSE"
+ENDLIST
+LIST "ClockDivider::work","hdl\ClockDivider.vhd","FALSE","FALSE"
+ENDLIST
+LIST "filter::work","hdl\filter.vhd","FALSE","FALSE"
+ENDLIST
+LIST "RamMem::work","hdl\RamMem.vhd","FALSE","FALSE"
+ENDLIST
+LIST "state_machine::work","hdl\state_machine.vhd","FALSE","FALSE"
+ENDLIST
+LIST "top_level::work","hdl\top_level.vhd","FALSE","FALSE"
+SUBBLOCK "ClockDivider::work","hdl\ClockDivider.vhd","FALSE","FALSE"
+SUBBLOCK "RamMem::work","hdl\RamMem.vhd","FALSE","FALSE"
+SUBBLOCK "address_latch::work","hdl\address_latch.vhd","FALSE","FALSE"
+SUBBLOCK "filter::work","hdl\filter.vhd","FALSE","FALSE"
+SUBBLOCK "state_machine::work","hdl\state_machine.vhd","FALSE","FALSE"
+SUBBLOCK "ucounter::work","hdl\ucounter.vhd","FALSE","FALSE"
+ENDLIST
+LIST "ucounter::work","hdl\ucounter.vhd","FALSE","FALSE"
+ENDLIST
+ENDLIST
+LIST ActiveTestBenchList
+ENDLIST
+LIST IOTabList
+ENDLIST
+LIST FPTabList
+ENDLIST
+LIST TimingTabList
+ENDLIST
+LIST FDCTabList
+ENDLIST

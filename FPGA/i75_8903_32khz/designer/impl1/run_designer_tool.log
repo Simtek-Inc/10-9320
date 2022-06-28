@@ -1,0 +1,326 @@
+Microsemi Libero Software
+Version: 11.9.2.1
+Release: v11.9 SP2
+
+'IDE_DESIGNERVIEW_ROOTDIR' set to
+'W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer'
+Info: The design tl758903.adb was last modified by software version 11.9.2.1.
+Opened an existing Libero design tl758903.adb.
+
+The Execute Script command succeeded ( 00:00:29 )
+Design saved to file
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903.adb.
+Wrote pin report to file:
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903_report_pin_byname.txt
+
+The Report command succeeded ( 00:00:01 )
+Wrote pin report to file:
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903_report_pin_bynumber.txt
+
+The Report command succeeded ( 00:00:01 )
+
+The Execute Script command succeeded ( 00:00:02 )
+Design saved to file
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903.adb.
+Wrote pin report to file:
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903_report_pin_byname.txt
+
+The Report command succeeded ( 00:00:01 )
+Wrote pin report to file:
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903_report_pin_bynumber.txt
+
+The Report command succeeded ( 00:00:01 )
+
+The Execute Script command succeeded ( 00:00:02 )
+=====================================================================
+Parameters used to run compile:
+===============================
+
+Family      : ProASIC3
+Device      : A3PN250
+Package     : 100 VQFP
+Source      :
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\synthesis\\
+tl758903.edn
+Format      : EDIF
+Topcell     : tl758903
+Speed grade : STD
+Temp        : 0:25:70
+Voltage     : 1.58:1.50:1.42
+
+Keep Existing Physical Constraints : Yes
+Keep Existing Timing Constraints   : Yes
+
+pdc_abort_on_error                 : Yes
+pdc_eco_display_unmatched_objects  : No
+pdc_eco_max_warnings               : 10000
+
+demote_globals                     : No
+promote_globals                    : No
+localclock_max_shared_instances    : 12
+localclock_buffer_tree_max_fanout  : 12
+
+combine_register                   : No
+delete_buffer_tree                 : No
+
+report_high_fanout_nets_limit      : 10
+
+=====================================================================
+Compile starts ...
+
+
+Netlist Optimization Report
+===========================
+
+Optimized macros:
+  - Dangling net drivers:   0
+  - Buffers:                0
+  - Inverters:              0
+  - Tieoff:                 0
+  - Logic combining:        9
+
+    Total macros optimized  9
+
+Warning: CMP503: Remapped 23 enable flip-flop(s) to a 2-tile implementation because the CLR/PRE
+         pin on the enable flip-flop is not being driven by a global net.
+
+There were 0 error(s) and 1 warning(s) in this design.
+=====================================================================
+
+Reading previous post-compile physical placement constraints.
+
+
+There were 0 error(s) and 0 warning(s).
+
+=====================================================================
+Compile report:
+===============
+
+    CORE                       Used:    281  Total:   6144   (4.57%)
+    IO (W/ clocks)             Used:     50  Total:     68   (73.53%)
+    GLOBAL (Chip+Quadrant)     Used:      1  Total:     18   (5.56%)
+    PLL                        Used:      0  Total:      1   (0.00%)
+    RAM/FIFO                   Used:      0  Total:      8   (0.00%)
+    Low Static ICC             Used:      0  Total:      1   (0.00%)
+    FlashROM                   Used:      0  Total:      1   (0.00%)
+    User JTAG                  Used:      0  Total:      1   (0.00%)
+
+Global Information:
+
+    Type            | Used   | Total
+    ----------------|--------|--------------
+    Chip global     | 0      | 6  (0.00%)*
+    Quadrant global | 1      | 12 (8.33%)
+
+    (*) Chip globals may be assigned to Quadrant globals using the Multi-View Navigator (MVN)
+        or Physical Design Constraints (PDC).
+        They may also be assigned to Quadrant globals automatically during Layout.
+
+Core Information:
+
+    Type    | Instances    | Core tiles
+    --------|--------------|-----------
+    COMB    | 209          | 209
+    SEQ     | 68           | 72
+
+I/O Function:
+
+    Type                                  | w/o register  | w/ register  | w/ DDR register
+    --------------------------------------|---------------|--------------|----------------
+    Input I/O                             | 26            | 0            | 0
+    Output I/O                            | 16            | 0            | 0
+    Bidirectional I/O                     | 8             | 0            | 0
+    Differential Input I/O Pairs          | 0             | 0            | 0
+    Differential Output I/O Pairs         | 0             | 0            | 0
+
+I/O Technology:
+
+                                    |   Voltages    |             I/Os
+    --------------------------------|-------|-------|-------|--------|--------------
+    I/O Standard(s)                 | Vcci  | Vref  | Input | Output | Bidirectional
+    --------------------------------|-------|-------|-------|--------|--------------
+    LVCMOS33                        | 3.30v | N/A   | 26    | 16     | 8
+
+I/O Placement:
+
+    Locked  :  50 ( 100.00% )
+    Placed  :   0
+    UnPlaced:   0
+
+Net information report:
+=======================
+
+The following nets drive enable flip-flops that have been remapped to a 2-tile implementation:
+    EffCnt  Type          Name
+    --------------------------
+    14      SET/RESET_NET Net   : Rst_c_0
+                          Driver: Rst_pad_RNIDFK3
+    9       INT_NET       Net   : Rst_c
+                          Driver: Rst_pad
+
+The following nets have been assigned to a quadrant global resource:
+    Fanout  Type          Name
+    --------------------------
+    64      CLK_NET       Net   : MClk_c
+                          Driver: MClk_pad
+                          Region: quadrant_LL
+
+High fanout nets in the post compile netlist:
+    Fanout  Type          Name
+    --------------------------
+    21      INT_NET       Net   : Address[0]
+                          Driver: Inst_address_latch/Address[0]/U1
+    21      INT_NET       Net   : Address[1]
+                          Driver: Inst_address_latch/Address[1]/U1
+    18      INT_NET       Net   : Address[2]
+                          Driver: Inst_address_latch/Address[2]/U1
+    15      INT_NET       Net   : dir1
+                          Driver: Inst_state_machine_1/dir
+    14      INT_NET       Net   : outB1
+                          Driver: Inst_filter_1/qbint
+    14      INT_NET       Net   : Rst_c
+                          Driver: Rst_pad
+    14      SET/RESET_NET Net   : Rst_c_0
+                          Driver: Rst_pad_RNIDFK3
+    13      INT_NET       Net   : Inst_state_machine_1/cs[1]
+                          Driver: Inst_state_machine_1/cs[1]
+    13      INT_NET       Net   : Inst_state_machine_1/cs[0]
+                          Driver: Inst_state_machine_1/cs[0]
+    12      INT_NET       Net   : Inst_RamMem/N_195
+                          Driver: Inst_RamMem/AddrData_16_iv_0_0_a2_3[6]
+
+Nets that are candidates for clock assignment and the resulting fanout:
+    Fanout  Type          Name
+    --------------------------
+    27      SET/RESET_NET Net   : Rst_c
+                          Driver: Rst_pad
+    21      INT_NET       Net   : Address[0]
+                          Driver: Inst_address_latch/Address[0]/U1
+    21      INT_NET       Net   : Address[1]
+                          Driver: Inst_address_latch/Address[1]/U1
+    18      INT_NET       Net   : Address[2]
+                          Driver: Inst_address_latch/Address[2]/U1
+    15      INT_NET       Net   : dir1
+                          Driver: Inst_state_machine_1/dir
+    14      INT_NET       Net   : outB1
+                          Driver: Inst_filter_1/qbint
+    13      INT_NET       Net   : Inst_state_machine_1/cs[1]
+                          Driver: Inst_state_machine_1/cs[1]
+    13      INT_NET       Net   : Inst_state_machine_1/cs[0]
+                          Driver: Inst_state_machine_1/cs[0]
+    12      INT_NET       Net   : Inst_RamMem/N_195
+                          Driver: Inst_RamMem/AddrData_16_iv_0_0_a2_3[6]
+    11      INT_NET       Net   : outA1
+                          Driver: Inst_filter_1/qaint
+
+The Compile command succeeded ( 00:00:01 )
+Design saved to file
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903.adb.
+Wrote pin report to file:
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903_report_pin_byname.txt
+
+The Report command succeeded ( 00:00:01 )
+Wrote pin report to file:
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903_report_pin_bynumber.txt
+
+The Report command succeeded ( 00:00:01 )
+
+The Execute Script command succeeded ( 00:00:02 )
+***** Layout Variables *********************************************
+
+Mode: TIMING_DRIVEN
+Power-driven Layout: OFF
+Incremental Placement: OFF
+Incremental Route: OFF
+
+
+
+Running I/O Bank Assigner.
+
+I/O Bank Assigner completed successfully.
+ 
+
+Planning global net placement...
+
+
+Global net placement completed successfully.
+
+                        o - o - o - o - o - o
+
+Timing-driven Placer Started: Mon Nov 22 08:35:43 2021
+
+Placer Finished: Mon Nov 22 08:35:46 2021
+Total Placer CPU Time:     00:00:03
+
+                        o - o - o - o - o - o
+
+
+Timing-driven Router 
+Design: tl758903                        Started: Mon Nov 22 08:35:49 2021
+
+ 
+Iterative improvement...
+
+Timing-driven Router completed successfully.
+
+Design: tl758903                        
+Finished: Mon Nov 22 08:35:57 2021
+Total CPU Time:     00:00:07            Total Elapsed Time: 00:00:08
+Total Memory Usage: 167.9 Mbytes
+                        o - o - o - o - o - o
+
+Loading the Timing data for the design.
+Finished loading the Timing data.
+TIMER: Max delay timing requirements have been met.
+TIMER: Min delay timing requirements have been met.
+
+The Layout command succeeded ( 00:00:18 )
+Design saved to file
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903.adb.
+Wrote pin report to file:
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903_report_pin_byname.txt
+
+The Report command succeeded ( 00:00:00 )
+Wrote pin report to file:
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903_report_pin_bynumber.txt
+
+The Report command succeeded ( 00:00:01 )
+
+The Execute Script command succeeded ( 00:00:01 )
+
+The Export-map command succeeded ( 00:00:10 )
+Wrote to the file:
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903.pdb
+CHECKSUM: CA01
+
+The Generate programming file command succeeded ( 00:00:12 )
+Design saved to file
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903.adb.
+Wrote pin report to file:
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903_report_pin_byname.txt
+
+The Report command succeeded ( 00:00:01 )
+Wrote pin report to file:
+W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\designer\i\
+mpl1\tl758903_report_pin_bynumber.txt
+
+The Report command succeeded ( 00:00:01 )
+
+The Execute Script command succeeded ( 00:00:02 )
+Design closed.
+

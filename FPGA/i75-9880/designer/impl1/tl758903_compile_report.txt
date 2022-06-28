@@ -1,0 +1,224 @@
+***************************************************************************
+                               Status Report
+                          Tue Jun 28 11:17:23 2022 ***************************************************************************
+
+Product: Designer
+Release: v11.9 SP2
+Version: 11.9.2.1
+File Name: W:\W221000\W221131\10-9320\Electrical\FPGA\i75-9880\designer\impl1\tl758903.adb
+Design Name: tl758903  Design State: compile
+Last Saved: Mon Nov 22 08:36:35 2021
+
+***** Device Data **************************************************
+
+Family: ProASIC3  Die: A3PN250  Package: 100 VQFP
+Speed: STD  Voltage: 1.5
+
+Restrict JTAG Pins: YES
+Restrict Probe Pins: YES
+
+Junction Temperature Range:   COM
+Voltage Range:   COM
+
+***** Import Variables *********************************************
+
+Source File(s) Imported on Tue Jun 28 11:17:07 2022:
+        W:\W221000\W221131\10-9320\Electrical\FPGA\i75-9880\synthesis\tl758903.edn
+
+
+***** CAE Variables ************************************************
+
+Back Annotation File: N/A
+
+
+***** Bitstream Variables ******************************************
+
+Bitstream File: N/A
+     Lock Mode: off
+
+
+***** Compile Variables ********************************************
+
+Netlist PIN properties overwrite existing properties: 0
+
+Compile Output:
+=====================================================================
+Parameters used to run compile:
+===============================
+
+Family      : ProASIC3
+Device      : A3PN250
+Package     : 100 VQFP
+Source      : W:\W221000\W221131\10-9320\Electrical\FPGA\i75-9880\synthesis\tl758903.edn
+Format      : EDIF
+Topcell     : tl758903
+Speed grade : STD
+Temp        : 0:25:70
+Voltage     : 1.58:1.50:1.42
+
+Keep Existing Physical Constraints : Yes
+Keep Existing Timing Constraints   : Yes
+
+pdc_abort_on_error                 : Yes
+pdc_eco_display_unmatched_objects  : No
+pdc_eco_max_warnings               : 10000
+
+demote_globals                     : No
+promote_globals                    : No
+localclock_max_shared_instances    : 12
+localclock_buffer_tree_max_fanout  : 12
+
+combine_register                   : No
+delete_buffer_tree                 : No
+
+report_high_fanout_nets_limit      : 10
+
+=====================================================================
+Compile starts ...
+
+
+Netlist Optimization Report
+===========================
+
+Optimized macros:
+  - Dangling net drivers:   0
+  - Buffers:                0
+  - Inverters:              0
+  - Tieoff:                 0
+  - Logic combining:        2
+
+    Total macros optimized  2
+
+Warning: CMP503: Remapped 25 enable flip-flop(s) to a 2-tile implementation because the CLR/PRE
+         pin on the enable flip-flop is not being driven by a global net.
+
+There were 0 error(s) and 1 warning(s) in this design.
+=====================================================================
+
+Reading previous post-compile physical placement constraints.
+
+
+There were 0 error(s) and 0 warning(s).
+
+=====================================================================
+Compile report:
+===============
+
+    CORE                       Used:    291  Total:   6144   (4.74%)
+    IO (W/ clocks)             Used:     50  Total:     68   (73.53%)
+    GLOBAL (Chip+Quadrant)     Used:      1  Total:     18   (5.56%)
+    PLL                        Used:      0  Total:      1   (0.00%)
+    RAM/FIFO                   Used:      0  Total:      8   (0.00%)
+    Low Static ICC             Used:      0  Total:      1   (0.00%)
+    FlashROM                   Used:      0  Total:      1   (0.00%)
+    User JTAG                  Used:      0  Total:      1   (0.00%)
+
+Global Information:
+
+    Type            | Used   | Total
+    ----------------|--------|--------------
+    Chip global     | 0      | 6  (0.00%)*
+    Quadrant global | 1      | 12 (8.33%)
+
+    (*) Chip globals may be assigned to Quadrant globals using the Multi-View Navigator (MVN)
+        or Physical Design Constraints (PDC).
+        They may also be assigned to Quadrant globals automatically during Layout.
+
+Core Information:
+
+    Type    | Instances    | Core tiles
+    --------|--------------|-----------
+    COMB    | 217          | 217
+    SEQ     | 70           | 74
+
+I/O Function:
+
+    Type                                  | w/o register  | w/ register  | w/ DDR register
+    --------------------------------------|---------------|--------------|----------------
+    Input I/O                             | 26            | 0            | 0
+    Output I/O                            | 16            | 0            | 0
+    Bidirectional I/O                     | 8             | 0            | 0
+    Differential Input I/O Pairs          | 0             | 0            | 0
+    Differential Output I/O Pairs         | 0             | 0            | 0
+
+I/O Technology:
+
+                                    |   Voltages    |             I/Os
+    --------------------------------|-------|-------|-------|--------|--------------
+    I/O Standard(s)                 | Vcci  | Vref  | Input | Output | Bidirectional
+    --------------------------------|-------|-------|-------|--------|--------------
+    LVCMOS33                        | 3.30v | N/A   | 26    | 16     | 8
+
+I/O Placement:
+
+    Locked  :  50 ( 100.00% )
+    Placed  :   0
+    UnPlaced:   0
+
+Net information report:
+=======================
+
+The following nets drive enable flip-flops that have been remapped to a 2-tile implementation:
+    EffCnt  Type          Name
+    --------------------------
+    16      SET/RESET_NET Net   : Rst_c_0
+                          Driver: Rst_pad_RNIDFK3
+    9       INT_NET       Net   : Rst_c
+                          Driver: Rst_pad
+
+The following nets have been assigned to a quadrant global resource:
+    Fanout  Type          Name
+    --------------------------
+    66      CLK_NET       Net   : MClk_c
+                          Driver: MClk_pad
+                          Region: quadrant_LL
+
+High fanout nets in the post compile netlist:
+    Fanout  Type          Name
+    --------------------------
+    21      INT_NET       Net   : Address_0[0]
+                          Driver: Inst_address_latch/Address_0[0]/U1
+    20      INT_NET       Net   : Address[0]
+                          Driver: Inst_address_latch/Address[0]/U1
+    20      INT_NET       Net   : Address[1]
+                          Driver: Inst_address_latch/Address[1]/U1
+    18      INT_NET       Net   : dir1
+                          Driver: Inst_state_machine_1/dir
+    18      INT_NET       Net   : Address_0[2]
+                          Driver: Inst_address_latch/Address_0[2]/U1
+    17      INT_NET       Net   : Address[2]
+                          Driver: Inst_address_latch/Address[2]/U1
+    16      SET/RESET_NET Net   : Rst_c_0
+                          Driver: Rst_pad_RNIDFK3
+    14      INT_NET       Net   : outB1
+                          Driver: Inst_filter_1/qbint
+    14      INT_NET       Net   : Rst_c
+                          Driver: Rst_pad
+    13      INT_NET       Net   : Inst_state_machine_1/cs[1]
+                          Driver: Inst_state_machine_1/cs[1]
+
+Nets that are candidates for clock assignment and the resulting fanout:
+    Fanout  Type          Name
+    --------------------------
+    29      SET/RESET_NET Net   : Rst_c
+                          Driver: Rst_pad
+    21      INT_NET       Net   : Address_0[0]
+                          Driver: Inst_address_latch/Address_0[0]/U1
+    20      INT_NET       Net   : Address[0]
+                          Driver: Inst_address_latch/Address[0]/U1
+    20      INT_NET       Net   : Address[1]
+                          Driver: Inst_address_latch/Address[1]/U1
+    18      INT_NET       Net   : dir1
+                          Driver: Inst_state_machine_1/dir
+    18      INT_NET       Net   : Address_0[2]
+                          Driver: Inst_address_latch/Address_0[2]/U1
+    17      INT_NET       Net   : Address[2]
+                          Driver: Inst_address_latch/Address[2]/U1
+    14      INT_NET       Net   : outB1
+                          Driver: Inst_filter_1/qbint
+    13      INT_NET       Net   : Inst_state_machine_1/cs[1]
+                          Driver: Inst_state_machine_1/cs[1]
+    13      INT_NET       Net   : Inst_state_machine_1/cs[0]
+                          Driver: Inst_state_machine_1/cs[0]
+
+

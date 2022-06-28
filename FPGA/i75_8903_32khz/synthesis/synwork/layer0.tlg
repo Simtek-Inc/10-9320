@@ -1,0 +1,24 @@
+@N: CD231 :"C:\Microsemi\Libero_SoC_v11.9\SynplifyPro\lib\vhd2008\std1164.vhd":890:16:890:17|Using onehot encoding for type mvl9plus. For example, enumeration 'U' is mapped to "1000000000".
+Warning:Can't open record reference file@N: CD630 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\tl758903.vhd":14:7:14:14|Synthesizing work.tl758903.behavioral.
+@N: CD630 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\filter.vhd":6:7:6:12|Synthesizing work.filter.behavioral.
+Post processing for work.filter.behavioral
+@N: CD630 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\ucounter.vhd":6:7:6:14|Synthesizing work.ucounter.behavioral.
+Post processing for work.ucounter.behavioral
+@N: CD630 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\state_machine.vhd":6:7:6:19|Synthesizing work.state_machine.behavioral.
+@N: CD604 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\state_machine.vhd":109:1:109:14|OTHERS clause is not synthesized.
+Post processing for work.state_machine.behavioral
+@W: CL117 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\state_machine.vhd":47:2:47:5|Latch generated from process for signal change; possible missing assignment in an if or case statement.
+@W: CL117 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\state_machine.vhd":47:2:47:5|Latch generated from process for signal ns(1 downto 0); possible missing assignment in an if or case statement.
+@W: CL117 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\state_machine.vhd":47:2:47:5|Latch generated from process for signal dir; possible missing assignment in an if or case statement.
+@N: CD630 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\address_latch.vhd":6:7:6:19|Synthesizing work.address_latch.behavioral.
+Post processing for work.address_latch.behavioral
+@N: CD630 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\ClockDivider.vhd":6:7:6:18|Synthesizing work.clockdivider.behavioral.
+Post processing for work.clockdivider.behavioral
+@W: CL279 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\ClockDivider.vhd":22:2:22:3|Pruning register bits 9 to 3 of div20Count(9 downto 0). If this is not the intended behavior, drive the inputs with valid values, or inputs from the top level.
+@N: CD630 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\RamMem.vhd":6:7:6:12|Synthesizing work.rammem.behavioral.
+Post processing for work.rammem.behavioral
+@W: CL169 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\RamMem.vhd":60:2:60:3|Pruning unused register AddrData_cl_17(0). Make sure that there are no unused intermediate registers.
+@A: CL282 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\RamMem.vhd":42:2:42:3|Feedback mux created for signal DAC_Data_Out[11:0]. It is possible a set/reset assignment for this is signal missing. To improve timing and area, specify a set/reset value.
+@A: CL282 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\RamMem.vhd":42:2:42:3|Feedback mux created for signal Enc_PB_Rtn. It is possible a set/reset assignment for this is signal missing. To improve timing and area, specify a set/reset value.
+Post processing for work.tl758903.behavioral
+@N: CL159 :"W:\W221000\W221081\INSTRUMENTS\9186\Electrical\Engineering\Source_Code\FPGA\i75_8903\hdl\filter.vhd":8:11:8:21|Input logic_reset is unused.

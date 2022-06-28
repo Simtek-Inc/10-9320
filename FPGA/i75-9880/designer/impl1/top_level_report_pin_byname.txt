@@ -1,0 +1,62 @@
+*****************************************************************
+Pin Report - Date: Tue Jun 28 11:52:32 2022 UNCOMPLETED LAYOUT
+Product: Designer
+Release: v11.9 SP2
+Version: 11.9.2.1
+Design Name: top_level
+Family: ProASIC3
+Die: A3PN250
+Package: 100 VQFP
+*****************************************************************
+Port                |Pin        |Fixed      |Function |I/O Std  |Output Drive (mA) |Slew |Resistor Pull |Output Load (pF) |Use I/O Reg |Hot Swappable |Schmitt Trigger |
+--------------------|-----------|-----------|---------|---------|------------------|-----|--------------|-----------------|------------|--------------|----------------|
+A1                   Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+AddrData[0]          Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             No
+AddrData[1]          Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             No
+AddrData[2]          Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             No
+AddrData[3]          Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             No
+AddrData[4]          Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             No
+AddrData[5]          Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             No
+AddrData[6]          Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             No
+AddrData[7]          Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             No
+Ale                  Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+B1                   Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+Brt_Pot_PB           Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+DAC_Data_Out[0]      Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+DAC_Data_Out[1]      Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+DAC_Data_Out[2]      Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+DAC_Data_Out[3]      Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+DAC_Data_Out[4]      Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+DAC_Data_Out[5]      Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+DAC_Data_Out[6]      Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+DAC_Data_Out[7]      Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+DAC_Data_Out[8]      Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+DAC_Data_Out[9]      Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+DAC_Data_Out[10]     Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+DAC_Data_Out[11]     Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+Enc_PB               Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+Enc_PB_Rtn           Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+Max_422_232_Sel      Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+Max_DE               Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+MClk                 Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_1thru6[0]    Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_1thru6[1]    Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_1thru6[2]    Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_1thru6[3]    Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_1thru6[4]    Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_1thru6[5]    Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_7thru11[0]   Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_7thru11[1]   Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_7thru11[2]   Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_7thru11[3]   Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_7thru11[4]   Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_12thru17[0]  Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_12thru17[1]  Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_12thru17[2]  Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_12thru17[3]  Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_12thru17[4]  Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+PB_Data_12thru17[5]  Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+Rd                   Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+Rst                  Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No
+UcClk                Unassigned  Unassigned            LVCMOS33  8                  High  None           35                No           No             ---
+Wr                   Unassigned  Unassigned            LVCMOS33  ---                ---   None           ---               No           No             No

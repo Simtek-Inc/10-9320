@@ -1,0 +1,8 @@
+C:\Microsemi\Libero_SoC_v11.9\SynplifyPro\bin64\syn_nfilter.exe  -link  -top  work.top_level  -multisrs  C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\synthesis\synwork\top_level_comp.srs  -osyn  C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\synthesis\synwork\top_level_mult.srs  -log  C:\_SWork\Local_Repos\10-9320\FPGA\i75-9880\synthesis\synlog\top_level_multi_srs_gen.srr 
+relcom:..\..\..\..\..\..\..\Microsemi\Libero_SoC_v11.9\SynplifyPro\bin64\syn_nfilter.exe -link -top work.top_level -multisrs ..\synwork\top_level_comp.srs -osyn ..\synwork\top_level_mult.srs -log ..\synlog\top_level_multi_srs_gen.srr
+rc:0 success:1 runtime:0
+file:..\synwork\top_level_comp.srs|io:i|time:1656435222|size:13821|exec:0|csum:3527BD05200BC18C7533905C819BC5C9
+file:..\synwork\top_level_mult.srs|io:o|time:1656435223|size:4646|exec:0|csum:
+file:..\synlog\top_level_multi_srs_gen.srr|io:o|time:1656435223|size:409|exec:0|csum:
+file:..\..\..\..\..\..\..\Microsemi\Libero_SoC_v11.9\SynplifyPro\bin\syn_nfilter.exe|io:i|time:1509044212|size:3128832|exec:1|csum:962D613D77B03012E41E67FDFAA0D819
+file:..\..\..\..\..\..\..\Microsemi\Libero_SoC_v11.9\SynplifyPro\bin64\syn_nfilter.exe|io:i|time:1509044484|size:3947520|exec:1|csum:17B0DA4185D3A16356E0044EDC31C9F0
